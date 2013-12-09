@@ -153,7 +153,7 @@ INSTALLED_APPS = (
     'logviewer',
     'API',
     'RSR',
-	'Cache',
+    'Cache',
     'south',
 
     # aims related
