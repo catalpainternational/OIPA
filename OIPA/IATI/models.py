@@ -194,7 +194,7 @@ class organisation_role(models.Model):
     description = models.TextField()
 
     def __unicode__(self,):
-        return "%s - %s" % (self.code, self.name)
+        return self.code
 
 
 class organisation_type(models.Model):
@@ -318,7 +318,9 @@ class organisation(models.Model):
     name = models.CharField(max_length=250, null=True, default=None)
 
     def __unicode__(self):
-        return self.name
+            if self.name == None:
+                return self.code
+            return self.name
 
     def total_activities(self):
         return self.activity_set.count()
@@ -377,7 +379,7 @@ class activity_participating_organisation(models.Model):
     name = models.TextField(null=True, default=None)
 
     def __unicode__(self,):
-        return "%s: %s - %s" % (self.activity, self.organisation, self.name)
+        return u"%s: %s - %s" % (self.activity, self.organisation, self.role)
 
 
 class activity_policy_marker(models.Model):
