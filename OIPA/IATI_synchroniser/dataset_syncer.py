@@ -8,7 +8,7 @@ class DatasetSyncer():
 
     def synchronize_with_iati_api(self, type):
         if type == 1:
-            cur_url = "http://www.iatiregistry.org/api/search/dataset?filetype=activity&all_fields=1&limit=1000&offset="
+            cur_url = "http://www.iatiregistry.org/api/search/dataset?country=MM&filetype=activity&all_fields=1&limit=1000&offset="
 
         if type == 2:
             cur_url = "http://www.iatiregistry.org/api/search/dataset?filetype=organisation&all_fields=1&limit=1000&offset="
