@@ -106,7 +106,8 @@ class Parser():
                 try:
                     func(elem)
                 except Exception as e:
-                    print '%s (%s)' % (e.message, type(e))
+                    continue
+                    #print '%s (%s)' % (e.message, type(e))
                 elem.clear()
                 while elem.getprevious() is not None:
                     del elem.getparent()[0]
@@ -930,7 +931,7 @@ class Parser():
                     self.exception_handler(e, activity.id, "add_countries")
                 except ValidationError, e:
                     self.exception_handler(e, activity.id, "add_countries")
-                except Exception as e:
+                except Exception, e:
                     self.exception_handler(e, activity.id, "add_countries")
         except Exception as e:
                 self.exception_handler(e, activity.id, "add_countries")

@@ -107,8 +107,8 @@ SECRET_KEY = '709)+!x8tujusgf**8v0l%t(u65p3haip^&l17k^t(i_r+csqd'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
+    'django.template.loaders.filesystem.Loader',
 #     'django.template.loaders.eggs.Loader',
 )
 
@@ -134,6 +134,7 @@ import os
 TEMPLATE_DIRS = (os.path.join(os.path.dirname(__file__), '..', 'templates').replace('\\','/'),)
 
 INSTALLED_APPS = (
+    'aims',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -154,6 +155,11 @@ INSTALLED_APPS = (
     'RSR',
     'Cache',
     'south'
+
+    # aims related
+    'django.contrib.humanize',
+    'registration',
+    'django_tables2',
 )
 
 
