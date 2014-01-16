@@ -113,6 +113,7 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'localeurl.middleware.LocaleURLMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -134,6 +135,7 @@ import os
 TEMPLATE_DIRS = (os.path.join(os.path.dirname(__file__), '..', 'templates').replace('\\','/'),)
 
 INSTALLED_APPS = (
+    'localeurl',
     'aims',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -158,8 +160,15 @@ INSTALLED_APPS = (
 
     # aims related
     'django.contrib.humanize',
+    'crispy_forms',
     'registration',
     'django_tables2',
+    'django_select2',
+    'rosetta',
+    'haystack',
+    'myanmar',
+
+    'django_extensions',
 )
 
 
