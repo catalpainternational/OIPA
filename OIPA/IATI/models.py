@@ -398,7 +398,7 @@ class activity_sector(models.Model):
     sector = models.ForeignKey(sector, null=True, default=None)
     alt_sector_name = models.CharField(max_length=200, null=True, default=None)
     vocabulary = models.ForeignKey(vocabulary, null=True, default=None)
-    percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True, default=None)
+    percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, default=None)
 
     def __unicode__(self,):
         return "%s - %s" % (self.activity, self.sector)
@@ -407,7 +407,7 @@ class activity_sector(models.Model):
 class activity_recipient_country(models.Model):
     activity = models.ForeignKey(activity)
     country = models.ForeignKey(country)
-    percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True, default=None)
+    percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, default=None)
 
     def __unicode__(self,):
         return "%s - %s" % (self.activity, self.country)
@@ -524,7 +524,7 @@ class document_link(models.Model):
 
 class result(models.Model):
     activity = models.ForeignKey(activity)
-    result_type = models.ForeignKey(result_type, null=True, default=None)
+    result_type = models.ForeignKey(result_type, null=True, blank=True, default=None)
     title = models.CharField(max_length=200, null=True, blank=True, default=None)
     description = models.TextField(null=True, blank=True, default=None)
 
@@ -543,7 +543,7 @@ class title(models.Model):
 
 class description(models.Model):
     activity = models.ForeignKey(activity)
-    description = models.TextField(null=True, default=None, db_index=True)
+    description = models.TextField(null=True, blank=True, default=None, db_index=True)
     language = models.ForeignKey(language, null=True, default=None)
     type = models.ForeignKey(description_type, related_name="description_type", null=True, default=None)
     rsr_description_type_id = models.IntegerField(null=True, default=None)
