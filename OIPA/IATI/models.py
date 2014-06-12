@@ -320,7 +320,10 @@ class organisation(models.Model):
     def __unicode__(self):
             if self.name == None:
                 return self.code
-            return self.name
+            elif self.name and self.abbreviation:
+                return "%s (%s)" % (self.name, self.abbreviation)
+            else:
+                return self.name
 
     def total_activities(self):
         return self.activity_set.count()
