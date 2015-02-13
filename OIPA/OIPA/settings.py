@@ -136,7 +136,6 @@ TEMPLATE_DIRS = (os.path.join(os.path.dirname(__file__), '..', 'templates').repl
 
 INSTALLED_APPS = (
     'localeurl',
-    'aims',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -156,19 +155,7 @@ INSTALLED_APPS = (
     'API',
     'RSR',
     'Cache',
-    'south',
 
-    # aims related
-    'django.contrib.humanize',
-    'crispy_forms',
-    'registration',
-    'django_tables2',
-    'django_select2',
-    'rosetta',
-    'haystack',
-    'myanmar',
-
-    'django_extensions',
 )
 
 
