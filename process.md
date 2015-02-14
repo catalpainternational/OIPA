@@ -2,7 +2,7 @@
 
 1. Get OIPAV2.1 running under Django 1.7       DONE synch to OIPA-V2.1 - git checkout migrate
 2. Run ./manage.py makemigrations [app_name]
-        This seems to require an app name, apps required are IATI, IATI_synchroniser, indicators, geodata and possible Cache and CurrencyConverter
+        This seems to require an app name, apps required are IATI, IATI_synchroniser, indicators, geodata and Cache
 3. Get new OIPA from https://github.com/openaid-IATI/OIPA 
     Delete all current migrations in the codebase
     Copy across generated initial migration directories from migrate OIPA-V2.1
