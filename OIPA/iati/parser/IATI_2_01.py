@@ -23,7 +23,7 @@ class Parse(IatiParser):
     def add_narrative(self, element, parent):
         # set on activity (if set)
         default_lang = self.default_lang
-        lang = element.attrib.get('{http://www.w3.org/XML/1998/namespace}lang', default_lang)
+        lang = element.attrib.get('{http://www.w3.org/XML/1998/namespace}lang', default_lang).lower()
         text = element.text
 
         if lang:
@@ -64,7 +64,7 @@ class Parse(IatiParser):
 
         id = self._normalize(element.xpath('iati-identifier/text()')[0])
 
-        default_lang = element.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+        default_lang = element.attrib.get('{http://www.w3.org/XML/1998/namespace}lang').lower()
         hierarchy = element.attrib.get('hierarchy')
         last_updated_datetime = self.validate_date(element.attrib.get('last-updated-datetime'))
         linked_data_uri = element.attrib.get('linked-data-uri')
