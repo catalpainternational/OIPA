@@ -28,7 +28,7 @@ class Parse(IatiParser):
 
     def add_narrative(self, element, parent):
         default_lang = self.default_lang # set on activity (if set)
-        lang = element.attrib.get('{http://www.w3.org/XML/1998/namespace}lang', default_lang)
+        lang = element.attrib.get('{http://www.w3.org/XML/1998/namespace}lang', default_lang).lower()
         text = element.text
 
         language = self.get_or_none(codelist_models.Language, code=lang)
@@ -67,7 +67,7 @@ class Parse(IatiParser):
     def iati_organisations__iati_organisation(self, element):
         id = self._normalize(element.xpath('organisation-identifier/text()')[0])
         last_updated_datetime = self.validate_date(element.attrib.get('last-updated-datetime'))
-        default_lang = element.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+        default_lang = element.attrib.get('{http://www.w3.org/XML/1998/namespace}lang').lower()
         default_currency = self.get_or_none(codelist_models.Currency, code=element.attrib.get('default-currency'))
 
         if not id:
@@ -125,7 +125,7 @@ class Parse(IatiParser):
             
             if organisation.primary_name:
                 default_lang = self.default_lang # set on activity (if set)
-                lang = element.attrib.get('{http://www.w3.org/XML/1998/namespace}lang', default_lang)
+                lang = element.attrib.get('{http://www.w3.org/XML/1998/namespace}lang', default_lang).lower()
                 if lang == 'en':
                     organisation.primary_name = element.text
             else:
