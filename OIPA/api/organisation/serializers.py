@@ -87,14 +87,25 @@ class OrganisationNameSerializer(serializers.Serializer):
         fields = ('narratives',)
 
 
-class OrganisationSerializer(DynamicFieldsModelSerializer):
+class OrganisationReportingOrganisationSerializer(serializers.ModelSerializer):
     class TypeSerializer(serializers.ModelSerializer):
         class Meta:
             model = iati.models.OrganisationType
             fields = ('code','name')
 
+    org_type = TypeSerializer()
+
+    class Meta:
+        model = org_models.OrganisationReportingOrganisation
+        fields = ('organisation', 'org_type',
+                  'reporting_org_identifier', 'secondary_reporter')
+
+
+class OrganisationSerializer(DynamicFieldsModelSerializer):
     url = EncodedHyperlinkedIdentityField(view_name='organisations:organisation-detail')
     name = OrganisationNameSerializer()
+    reporting_orgs = OrganisationReportingOrganisationSerializer(many=True)
+    reported_by_orgs = OrganisationReportingOrganisationSerializer(many=True)
 
     class Meta:
         model = org_models.Organisation
@@ -103,6 +114,8 @@ class OrganisationSerializer(DynamicFieldsModelSerializer):
             'organisation_identifier',
             'name',
             'primary_name',
+            'reporting_orgs',
+            'reported_by_orgs',
             'last_updated_datetime',
             'default_currency',
             'default_lang',

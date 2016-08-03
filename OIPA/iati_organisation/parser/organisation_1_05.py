@@ -54,7 +54,7 @@ class Parse(Parse_2_01):
         organisation_reporting_organisation = self.get_model('OrganisationReportingOrganisation')
 
         if element.text:
-            organisation_reporting_organisation.primary_name = element.text
+            organisation_reporting_organisation.organisation.primary_name = element.text
             self.add_narrative(element, organisation_reporting_organisation)
 
         return element
