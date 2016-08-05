@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from django.db import models
 from geodata.models import Country, Region
 from activity_manager import ActivityQuerySet
