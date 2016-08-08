@@ -772,7 +772,7 @@ class Location(models.Model):
     adm_country_adm2 = models.CharField(max_length=100, default="") # deprecated as of v1.04
     adm_country_name = models.CharField(max_length=200, default="") # deprecated as of v1.04
     adm_code = models.CharField(max_length=255, default="") # new in v1.04
-    adm_vocabulary = models.ForeignKey(GeographicVocabulary, null=True, default=None, related_name="administrative_vocabulary   ") # new in v1.04
+    adm_vocabulary = models.ForeignKey(GeographicVocabulary, null=True, default=None, related_name="administrative_vocabulary") # new in v1.04
     adm_level = models.IntegerField(null=True, default=None) # new in v1.04
     percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True, default=None)
     latitude = models.CharField(max_length=70, default="") # deprecated as of v1.04
