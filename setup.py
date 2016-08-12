@@ -7,7 +7,7 @@ install_requirements = parse_requirements('OIPA/requirements.txt', session=False
 requirements = [str(ir.req) for ir in install_requirements]
 
 setup(name='OIPA',
-      version='2.1.4',
+      version='2.2',
       author='Zimmerman & Zimmerman',
       description="OIPA is an open-source framework that renders IATI compliant XML and \
             related indicator #opendata into the OIPA datamodel for storage. \
