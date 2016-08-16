@@ -20,10 +20,4 @@ class Migration(migrations.Migration):
             },
             bases=(models.Model,),
         ),
-        migrations.AddField(
-            model_name='activityrecipientregion',
-            name='region_vocabulary',
-            field=models.ForeignKey(default=1, to='iati.RegionVocabulary'),
-            preserve_default=True,
-        ),
     ]

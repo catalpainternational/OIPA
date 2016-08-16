@@ -7,7 +7,8 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('geodata', '__first__'),
+        ('geodata', '0001_initial'),
+        ('iati', '0001_initial'),
     ]
 
     operations = [
@@ -986,6 +987,12 @@ class Migration(migrations.Migration):
             options={
             },
             bases=(models.Model,),
+        ),
+        migrations.AddField(
+            model_name='activityrecipientregion',
+            name='region_vocabulary',
+            field=models.ForeignKey(default=1, to='iati.RegionVocabulary'),
+            preserve_default=True,
         ),
         migrations.AddField(
             model_name='transaction',
