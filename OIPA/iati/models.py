@@ -473,6 +473,9 @@ class ActivityParticipatingOrganisation(models.Model):
     role = models.ForeignKey(OrganisationRole, null=True, default=None)
     name = models.TextField(default="")
 
+    class Meta:
+        unique_together = (('activity', 'organisation', 'role'),)
+
     def __unicode__(self,):
         return "%s: %s - %s" % (self.activity, self.organisation, self.name)
 
@@ -494,6 +497,9 @@ class ActivitySector(models.Model):
     alt_sector_name = models.CharField(max_length=200, default="")
     vocabulary = models.ForeignKey(Vocabulary, null=True, default=None)
     percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True, default=None)
+
+    class Meta:
+        unique_together = (('activity', 'sector'),)
 
     def __unicode__(self,):
         return "%s - %s" % (self.activity, self.sector)
