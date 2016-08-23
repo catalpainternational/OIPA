@@ -1,9 +1,6 @@
 OIPA 
 ============
 
-[![Build Status](https://travis-ci.org/openaid-IATI/OIPA.svg?branch=master)](https://travis-ci.org/openaid-IATI/OIPA)
-[![Coverage Status](https://coveralls.io/repos/openaid-IATI/OIPA/badge.svg?branch=master&service=github)](https://coveralls.io/github/openaid-IATI/OIPA?branch=master)
-
 OIPA is developed within the www.openaid.nl and www.openaidsearch.org platform and enables IATI standard compliant datasets to easily parse and interface that data using the OIPA framework that has been developed using a Django interface. It has been implemented for UN-Habitat at http://open.unhabitat.org and UNESCO: http://opendata.unesco.org.
 
 IATI is a global aid transparency standard and it makes information about aid spending easier to access, re-use and understand the underlying data using a unified open standard. You can find more about the IATA XML standard at:
