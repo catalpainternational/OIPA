@@ -141,7 +141,6 @@ INSTALLED_APPS = (
     'django_otp.plugins.otp_totp',
     'otp_yubikey',
     'two_factor',
-    'debug_toolbar',
     'django_extensions',
     'iati_vocabulary.apps.IatiVocabularyConfig',
     'iati_codelists.apps.IatiCodelistsConfig',
