@@ -699,6 +699,8 @@ class Description(models.Model):
     type = models.ForeignKey(DescriptionType, related_name="description_type", null=True, default=None)
     rsr_description_type_id = models.IntegerField(null=True, default=None) # remove
 
+    class Meta:
+        unique_together = (('activity', 'type', 'language'),)
 
     def __unicode__(self,):
         return "%s - %s" % (self.activity, self.type)
