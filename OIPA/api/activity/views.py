@@ -365,6 +365,7 @@ class ActivityList(DynamicListView):
         'descriptions', 
         'transactions', 
         'reporting_organisations',
+        'last_updated_datetime',
     )
 
     always_ordering = 'id'
@@ -377,6 +378,7 @@ class ActivityList(DynamicListView):
         'actual_end_date',
         'start_date',
         'end_date',
+	'last_updated_datetime',
         'activity_budget_value',
         'activity_incoming_funds_value',
         'activity_disbursement_value',

@@ -4,7 +4,7 @@ from django.db.models.fields.related import OneToOneRel
 from django.db.models import Q
 from django.conf import settings
 
-from django_filters import FilterSet, NumberFilter, DateFilter, BooleanFilter
+from django_filters import FilterSet, NumberFilter, DateFilter, DateTimeFilter, BooleanFilter
 
 from api.generics.filters import CommaSeparatedCharFilter
 from api.generics.filters import CommaSeparatedCharMultipleFilter
@@ -82,6 +82,14 @@ class ActivityFilter(TogetherFilterSet):
 
     end_date_isnull = BooleanFilter(lookup_type='isnull', name='end_date')
     start_date_isnull = BooleanFilter(lookup_type='isnull', name='start_date')
+
+    last_updated_datetime_lte = DateTimeFilter(
+        lookup_type='lte',
+        name='last_updated_datetime')
+
+    last_updated_datetime_gte = DateTimeFilter(
+        lookup_type='gte',
+        name='last_updated_datetime')
 
     xml_source_ref = CommaSeparatedCharFilter(
         lookup_type='in',
@@ -469,6 +477,7 @@ class RelatedOrderingFilter(filters.OrderingFilter):
             'actual_end_date': 'actual_end',
             'start_date': 'start_date',
             'end_date': 'end_date',
+	    'last_updated_datetime': 'last_updated_datetime',
         }
 
         for i, term in enumerate(ordering):
