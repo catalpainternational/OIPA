@@ -18,7 +18,7 @@ DATABASES = {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': 'oipa',
         'USER': 'oipa',
-        'PASSWORD': 'oipa',
+        'PASSWORD': '',
         'HOST': '127.0.0.1',
     },
 }
@@ -31,13 +31,11 @@ HAYSTACK_CONNECTIONS = {
 
 RQ_QUEUES = {
     'default': {
-        'HOST': 'localhost',
-        'PORT': 6379,
+        'UNIX_SOCKET_PATH': '/run/redis/oipa.sock/',
         'DB': 0,
     },
     'parser': {
-        'HOST': 'localhost',
-        'PORT': 6379,
+        'UNIX_SOCKET_PATH': '/run/redis/oipa.sock/',
         'DB': 0,
     }
 }
