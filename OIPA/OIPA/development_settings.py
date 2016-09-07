@@ -31,11 +31,11 @@ HAYSTACK_CONNECTIONS = {
 
 RQ_QUEUES = {
     'default': {
-        'UNIX_SOCKET_PATH': '/run/redis/oipa.sock/',
+        'UNIX_SOCKET_PATH': '/run/redis/oipa.sock',
         'DB': 0,
     },
     'parser': {
-        'UNIX_SOCKET_PATH': '/run/redis/oipa.sock/',
+        'UNIX_SOCKET_PATH': '/run/redis/oipa.sock',
         'DB': 0,
     }
 }
