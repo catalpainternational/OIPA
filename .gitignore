@@ -46,3 +46,7 @@ OIPA/static-root/
 
 # pyenv
 .python-version
+
+# distutils
+dist
+*.egg-info
