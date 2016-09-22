@@ -1,3 +1,4 @@
+from __future__ import print_function
 from geodata.models import Country, Region, City, Adm1Region
 import ujson
 import os
@@ -36,7 +37,7 @@ class CountryUpdater():
                         the_country.save()
     
                 except:
-                    print "error in update_country_regions"
+                    print("error in update_country_regions")
             json_data.close()
 
 
@@ -98,7 +99,7 @@ class CountryUpdater():
                         the_country.save()
 
                 except Exception as e:
-                   print e.args
+                   print(e.args)
 
             json_data.close()
 
@@ -129,12 +130,12 @@ class CountryUpdater():
                     # the_country.polygon = pol
                     the_country.save()
 
-                except ValueError, e:
-                    print "Value error update_polygon_set" + e.message
-                except TypeError, e:
-                    print "Type error update_polygon_set" + e.message
+                except ValueError as e:
+                    print("Value error update_polygon_set" + e.message)
+                except TypeError as e:
+                    print("Type error update_polygon_set" + e.message)
                 except Exception as e:
-                    print "Error in update_polygon_set", sys.exc_info()[0]
+                    print("Error in update_polygon_set", sys.exc_info()[0])
 
 
 
@@ -194,8 +195,8 @@ class RegionUpdater():
                                 the_country.save()
 
                 except Exception as e:
-                    print "error in update_country_regions" + str(type)
-                    print e.args
+                    print("error in update_country_regions" + str(type))
+                    print(e.args)
         json_data.close()
 
     def update_unesco_regions(self):
@@ -307,12 +308,12 @@ class CityUpdater():
                         the_country.capital_city = new_city
                         the_country.save()
 
-            except AttributeError, e:
-                print "error in update_cities ", sys.exc_info()[0]
-                print e.message
+            except AttributeError as e:
+                print("error in update_cities ", sys.exc_info()[0])
+                print(e.message)
 
             except Exception as e:
-                print "error in update_cities"
+                print("error in update_cities")
 
         json_data.close()
 
@@ -425,7 +426,7 @@ class Admin1RegionUpdater():
                     point_loc_str = 'POINT(' + longitude + ' ' + latitude + ')'
                     the_adm1_region.center_location = fromstr(point_loc_str, srid=4326)
                 except KeyError:
-                    print "Admin 1 region with code %s has an illegal center location..." % the_adm1_region.adm1_code
+                    print("Admin 1 region with code %s has an illegal center location..." % the_adm1_region.adm1_code)
             if "sov_a3" in p:
                 the_adm1_region.sov_a3 = p["sov_a3"]
             if "adm0_a3" in p:

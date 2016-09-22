@@ -1,18 +1,18 @@
 from lxml import etree
 from iati import models
-from iati.management.commands.total_budget_updater import TotalBudgetUpdater
 from re import sub
 from django.conf import settings
 import time
 from datetime import datetime
-from deleter import Deleter
 import gc
-from iati.filegrabber import FileGrabber
 from iati_synchroniser.exception_handler import exception_handler
 from iati.data_backup.unesco_sectors import unesco_sectors
 import string
 import random
 
+from .deleter import Deleter
+from .filegrabber import FileGrabber
+from .management.commands.total_budget_updater import TotalBudgetUpdater
 
 
 class Parser():

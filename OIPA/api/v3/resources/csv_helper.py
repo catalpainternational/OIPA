@@ -1,3 +1,4 @@
+from __future__ import print_function
 import csv
 import StringIO
 
@@ -47,7 +48,7 @@ class CsvHelper(Serializer):
             CSVContent=raw_data.getvalue()
             return CSVContent
         except Exception as e:
-            print e
+            print(e)
             return None
 
     def flatten(self, parent_name, data, odict={}):

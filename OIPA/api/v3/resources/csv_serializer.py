@@ -1,3 +1,4 @@
+from __future__ import print_function
 import csv
 import StringIO
 from tastypie.serializers import Serializer
@@ -50,7 +51,7 @@ class CsvSerializer(Serializer):
             return CSVContent
 
         except Exception as e:
-            print e
+            print(e)
 
     def set_data(self, data):
 
@@ -156,7 +157,7 @@ class CsvSerializer(Serializer):
 
 
         except Exception as e:
-            print e
+            print(e)
 
         return column_dict
 

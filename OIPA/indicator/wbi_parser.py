@@ -55,7 +55,7 @@ class WBI_Parser():
 
         with open(specific, 'rb') as f:
             series_reader = csv.reader(f)
-            series_header = series_reader.next()
+            series_header = next(series_reader)
             for row in series_reader:
                 indicator_id = row[series_header.index("Series Code")]
                 indicator_id = self.decode_data(indicator_id)
@@ -87,7 +87,7 @@ class WBI_Parser():
 
         with open(specific, 'rb') as f:
             data_reader = csv.reader(f)
-            data_header = data_reader.next()
+            data_header = next(data_reader)
             for row in data_reader:
                 indicator_code = row[data_header.index("Indicator Code")]
                 our_indicator = self.get_indicator_or_create(indicator_code)
@@ -113,7 +113,7 @@ class WBI_Parser():
 
         with open(specific, 'rb') as f:
             data_reader = csv.reader(f)
-            data_header = data_reader.next()
+            data_header = next(data_reader)
             for row in data_reader:
                 country_iso3 = row[data_header.index("Country Code")]
                 country_iso2 = row[data_header.index("2-alpha code")]

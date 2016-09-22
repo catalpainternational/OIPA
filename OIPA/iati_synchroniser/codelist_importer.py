@@ -1,3 +1,4 @@
+from __future__ import print_function
 __author__ = 'vincentvantwestende'
 from iati.models import *
 import urllib2
@@ -281,7 +282,7 @@ class CodeListImporter():
                     db_row = GeographicVocabulary(code=code, name=name, description=description, category=category, url=url)
 
                 else:
-                    print "type not saved: " + tag
+                    print("type not saved: " + tag)
 
                 if (db_row is not None):
                     db_row.save()

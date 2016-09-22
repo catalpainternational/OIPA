@@ -40,17 +40,17 @@ class FileGrabber():
             # return iati_file
 
 
-        except urllib2.HTTPError, e:
+        except urllib2.HTTPError as e:
             logger.info('HTTPError (url=' + url + ') = ' + str(e.code))
             if try_number < 6:
                 self.get_the_file(url, try_number + 1)
             else:
                 return None
-        except urllib2.URLError, e:
+        except urllib2.URLError as e:
             logger.info('URLError (url=' + url + ') = ' + str(e.reason))
             if try_number < 6:
                 self.get_the_file(url, try_number + 1)
-        except httplib.HTTPException, e:
+        except httplib.HTTPException as e:
             logger.info('HTTPException reading url ' + url)
             if try_number < 6:
                 self.get_the_file(url, try_number + 1)

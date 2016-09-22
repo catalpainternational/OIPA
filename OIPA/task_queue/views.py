@@ -157,7 +157,7 @@ def get_queue(request):
         if count_jobs == 20:
             break
 
-        job_dict = { 'job_id': job._id, 'created_at':job.created_at.strftime("%a, %d %b %Y %H:%M:%S +0000"), 'enqueued_at':job.enqueued_at.strftime("%a, %d %b %Y %H:%M:%S +0000"), 'status': job.get_status(), 'function': job.func_name, 'args': job.args}
+        job_dict = { 'job_id': job._id, 'created_at':job.created_at.strftime("%a, %d %b %Y %H:%M:%S +0000"), 'enqueued_at':job.enqueued_at.strftime("%a, %d %b %Y %H:%M:%S +0000"), 'status': job.get_status(), 'function': job.__name__, 'args': job.args}
         jobdata.append(job_dict)
     data = json.dumps(jobdata)
     return HttpResponse(data, content_type='application/json')
@@ -220,7 +220,7 @@ def get_failed_tasks(request):
 
     jobdata = list()
     for job in queue.jobs:
-        job_dict = { 'job_id' : job.id, 'func_name': job.func_name, 'error_message': job.exc_info, 'ended_at': job.ended_at.strftime("%a, %d %b %Y %H:%M:%S +0000"), 'enqueued_at' : job.enqueued_at.strftime("%a, %d %b %Y %H:%M:%S +0000")}
+        job_dict = { 'job_id' : job.id, 'func_name': job.__name__, 'error_message': job.exc_info, 'ended_at': job.ended_at.strftime("%a, %d %b %Y %H:%M:%S +0000"), 'enqueued_at' : job.enqueued_at.strftime("%a, %d %b %Y %H:%M:%S +0000")}
         jobdata.append(job_dict)
 
     data = json.dumps(jobdata)

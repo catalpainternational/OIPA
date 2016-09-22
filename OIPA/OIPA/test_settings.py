@@ -1,4 +1,5 @@
-from settings import *
+from __future__ import absolute_import
+from .settings import *
 
 SECRET_KEY = 'j!bxt0h-=d)1@2r8du!+e4m9x-y*5od7+zq&=tfjwq(ecuov!*'
 

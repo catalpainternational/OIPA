@@ -1,3 +1,4 @@
+from __future__ import print_function
 from iati.models import Sector, BudgetType, DescriptionType
 import ujson
 import os
@@ -27,8 +28,8 @@ class SectorUpdater():
                     the_sector.save()
 
                 except Exception as e:
-                    print "error in update_country_sectors" + str(type)
-                    print e.args
+                    print("error in update_country_sectors" + str(type))
+                    print(e.args)
                     return False
             json_data.close()
             return True
@@ -56,8 +57,8 @@ class SectorUpdater():
                     the_sector.save()
 
                 except Exception as e:
-                    print "error in update_rain_sectors" + str(type)
-                    print e.args
+                    print("error in update_rain_sectors" + str(type))
+                    print(e.args)
                     return False
             json_data.close()
 
@@ -83,8 +84,8 @@ class SectorUpdater():
                     the_sector.save()
 
                 except Exception as e:
-                    print "error in update_rain_sectors" + str(type)
-                    print e.args
+                    print("error in update_rain_sectors" + str(type))
+                    print(e.args)
                     return False
             json_data.close()
 
@@ -110,8 +111,8 @@ class SectorUpdater():
                     the_sector.save()
 
                 except Exception as e:
-                    print "error in update_rain_sectors" + str(type)
-                    print e.args
+                    print("error in update_rain_sectors" + str(type))
+                    print(e.args)
                     return False
             json_data.close()
 

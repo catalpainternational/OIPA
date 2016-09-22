@@ -1,3 +1,4 @@
+from __future__ import print_function
 # Django specific
 from django.core.management.base import BaseCommand
 from data.models import Country
@@ -24,14 +25,14 @@ class Command(BaseCommand):
                     country.longitude = COUNTRY_LOCATION[country.iso]['longitude']
                     country.iso2 = country.iso
                     country.save()
-                    print "Country %s has been updated " % country.iso
+                    print("Country %s has been updated " % country.iso)
             except KeyError:
                 pass
 
             if args[0] == 'multiple':
                 multiple_indicators = TypeDeprivationCountry.objects.filter(is_matrix=True)
                 for m in multiple_indicators:
-                    print m
+                    print(m)
 
             if args[0] == 'single':
                 unhabitat_indicators = UnHabitatIndicatorCountry.objects.filter(country=country)

@@ -1,3 +1,4 @@
+from __future__ import print_function
 from django.contrib import admin
 from django.shortcuts import get_object_or_404
 from multiupload.admin import MultiUploadAdmin
@@ -179,7 +180,7 @@ class IndicatorDataUploadAdmin(MultiUploadAdmin):
                             indicator_from_db = Indicator(id=indicator_id_csv, description=description_csv, friendly_label=friendly_label_csv, type_data=type_data_csv, deprivation_type=deprivation_type_csv, category=category_csv)
                             indicator_from_db.save()
                         except Exception as e:
-                            print e
+                            print(e)
 
                 #getting country from our database
                 country_from_db = find_country(country_name=country_csv, countries=countries)
@@ -228,7 +229,7 @@ class IndicatorDataUploadAdmin(MultiUploadAdmin):
 
                     line_counter += 1
                 except Exception as e:
-                    print e
+                    print(e)
 
             log = save_log(file=uploaded,
                      uploaded_by_user=request.user,
@@ -256,7 +257,7 @@ class IndicatorDataUploadAdmin(MultiUploadAdmin):
             }
 
         except Exception as e:
-                        print e
+                        print(e)
 
     def delete_file(self, pk, request):
         '''

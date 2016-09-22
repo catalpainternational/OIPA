@@ -1,3 +1,4 @@
+from __future__ import print_function
 from iati.models import Activity
 import logging
 from iati_synchroniser.models import IatiXmlSource, Publisher
@@ -34,7 +35,7 @@ class ParseAdmin():
 
 
             if ((curdate - update_interval_time) > last_updated):
-                print "Now updating " + source.source_url
+                print("Now updating " + source.source_url)
                 source.save()
 
         [parse(source) for source in IatiXmlSource.objects.all()]
@@ -49,7 +50,7 @@ class ParseAdmin():
             update_interval_time = 24 * 60 * 60 * int(days)
 
             if ((curdate - update_interval_time) > last_updated):
-                print "Now updating " + source.source_url
+                print("Now updating " + source.source_url)
                 source.save()
 
         [parse(source) for source in IatiXmlSource.objects.all()]

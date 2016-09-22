@@ -1,5 +1,6 @@
+from __future__ import absolute_import
 import json
-import models
+from . import models
 import httplib
 import urllib2
 import datetime
@@ -66,7 +67,7 @@ class DatasetSyncer():
                 else:
                     return False
 
-        except (urllib2.HTTPError, urllib2.URLError, httplib.HTTPException), e:
+        except (urllib2.HTTPError, urllib2.URLError, httplib.HTTPException) as e:
             exception_handler(e, "HTTP error", url)
 
             if try_number < 4:

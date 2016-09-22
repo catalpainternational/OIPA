@@ -1,3 +1,4 @@
+from __future__ import print_function
 from django.core.management.base import BaseCommand
 from iati.models import Organisation
 from iati_synchroniser.models import Publisher
@@ -25,6 +26,6 @@ class OrganisationNameUpdater():
                     o.save()
 
             except Exception as e:
-                print "error in update_organisation_names"
+                print("error in update_organisation_names")
 
         return True

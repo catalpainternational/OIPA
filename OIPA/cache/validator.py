@@ -1,3 +1,4 @@
+from __future__ import print_function
 from cache.models import *
 import urllib2
 import httplib
@@ -87,14 +88,14 @@ class Validator():
                 #xml call, TO DO
                 return None
 
-        except urllib2.HTTPError, e:
-            print 'HTTP error: ' + str(e.code)
+        except urllib2.HTTPError as e:
+            print('HTTP error: ' + str(e.code))
 
-        except urllib2.URLError, e:
-            print 'URL error: ' + str(e.reason)
+        except urllib2.URLError as e:
+            print('URL error: ' + str(e.reason))
 
-        except httplib.HTTPException, e:
-            print 'HTTP exception' + str(e.code)
+        except httplib.HTTPException as e:
+            print('HTTP exception' + str(e.code))
 
         return None
 
@@ -110,7 +111,7 @@ class Validator():
                     entry.save()
 
             except Exception as e:
-                print e.message
+                print(e.message)
 
     def get_cached_call(self, call):
         data = CachedCall.objects.get(call=call).result
@@ -127,6 +128,6 @@ class Validator():
             return True
 
         except Exception as e:
-            print type(e)
-            print e.message
+            print(type(e))
+            print(e.message)
             return False

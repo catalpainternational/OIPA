@@ -1,5 +1,6 @@
 from django.db.models import query, Q
 import operator
+from functools import reduce
 
 
 class ActivityQuerySet(query.QuerySet):
