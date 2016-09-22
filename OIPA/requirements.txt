@@ -8,7 +8,6 @@ contexttimer==0.3.0
 mechanize==0.2.5
 django-suit==0.2.11
 objgraph==1.8.1
-guppy==0.1.10
 ujson==1.33
 simplejson
 redis==2.10.3
