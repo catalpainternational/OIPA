@@ -1,12 +1,16 @@
-import urllib2
-import httplib
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import object
+import urllib.request, urllib.error, urllib.parse
+import http.client
 import logging
 import mechanize
-import cookielib
+import http.cookiejar
 
 logger = logging.getLogger(__name__)
 
-class FileGrabber():
+class FileGrabber(object):
 
     def get_the_file(self, url, try_number = 0):
         try:
@@ -14,7 +18,7 @@ class FileGrabber():
             br = mechanize.Browser()
 
             # Cookie Jar
-            cj = cookielib.LWPCookieJar()
+            cj = http.cookiejar.LWPCookieJar()
             br.set_cookiejar(cj)
 
             # Browser options
@@ -40,17 +44,17 @@ class FileGrabber():
             # return iati_file
 
 
-        except urllib2.HTTPError as e:
+        except urllib.error.HTTPError as e:
             logger.info('HTTPError (url=' + url + ') = ' + str(e.code))
             if try_number < 6:
                 self.get_the_file(url, try_number + 1)
             else:
                 return None
-        except urllib2.URLError as e:
+        except urllib.error.URLError as e:
             logger.info('URLError (url=' + url + ') = ' + str(e.reason))
             if try_number < 6:
                 self.get_the_file(url, try_number + 1)
-        except httplib.HTTPException as e:
+        except http.client.HTTPException as e:
             logger.info('HTTPException reading url ' + url)
             if try_number < 6:
                 self.get_the_file(url, try_number + 1)

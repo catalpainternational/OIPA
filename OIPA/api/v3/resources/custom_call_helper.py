@@ -1,7 +1,9 @@
+from builtins import zip
+from builtins import object
 # Data specific
 from geodata.data_backup.country_data import countryData
 
-class CustomCallHelper():
+class CustomCallHelper(object):
 
     def make_where_query(self, values, name):
         query = ''
@@ -50,7 +52,7 @@ class CustomCallHelper():
     def get_fields(self, cursor):
         desc = cursor.description
         results = [
-        dict(zip([col[0] for col in desc], row))
+        dict(list(zip([col[0] for col in desc], row)))
         for row in cursor.fetchall()
         ]
         return results
@@ -59,11 +61,11 @@ class CustomCallHelper():
         q= ''
 
         for f in filters:
-            if f[f.keys()[0]]:
-                values = f[f.keys()[0]].split(',')
+            if f[list(f.keys())[0]]:
+                values = f[list(f.keys())[0]].split(',')
             else:
                 values = None
-            q = "{q} {custom}) and (".format(q=q, custom=self.make_where_query(values=values, name=f.keys()[0]))
+            q = "{q} {custom}) and (".format(q=q, custom=self.make_where_query(values=values, name=list(f.keys())[0]))
 
         q = " AND ({q}".format(q=q.replace(' and ()', '')[:-5])
         try:

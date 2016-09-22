@@ -1,4 +1,6 @@
 from __future__ import print_function
+from builtins import str
+from builtins import object
 from geodata.models import Country, Region, City, Adm1Region
 import ujson
 import os
@@ -8,7 +10,7 @@ import sys
 import xml.etree.cElementTree as etree
 
 
-class CountryUpdater():
+class CountryUpdater(object):
 
         def update_regions(self):
             base = os.path.dirname(os.path.abspath(__file__))
@@ -142,7 +144,7 @@ class CountryUpdater():
 
 
 
-class RegionUpdater():
+class RegionUpdater(object):
 
     def update_un_regions(self):
         from geodata.models import Country, Region
@@ -226,7 +228,7 @@ class RegionUpdater():
             code=999,
             name='UNESCO')[0]
 
-        for region_id, info in unesco_regions.iteritems():
+        for region_id, info in unesco_regions.items():
 
             center_location_string = 'POINT(' + info['longitude'] + ' ' + info['latitude'] + ')'
             center_location = fromstr(
@@ -270,7 +272,7 @@ class RegionUpdater():
             json_data.close()
 
 
-class CityUpdater():
+class CityUpdater(object):
 
     def update_cities(self):
         base = os.path.dirname(os.path.abspath(__file__))
@@ -321,7 +323,7 @@ class CityUpdater():
 
 
 
-class Admin1RegionUpdater():
+class Admin1RegionUpdater(object):
 
     def update_all(self):
         base = os.path.dirname(os.path.abspath(__file__))

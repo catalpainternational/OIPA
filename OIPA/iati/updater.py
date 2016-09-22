@@ -1,10 +1,12 @@
 from __future__ import print_function
+from builtins import str
+from builtins import object
 from iati.models import Sector, BudgetType, DescriptionType
 import ujson
 import os
 import os.path
 
-class SectorUpdater():
+class SectorUpdater(object):
 
         def update_unesco_sectors(self):
 

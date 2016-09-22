@@ -1,4 +1,7 @@
-import StringIO
+from future import standard_library
+standard_library.install_aliases()
+from builtins import next
+import io
 import tokenize
 
 
@@ -49,7 +52,7 @@ def loads(string):
     """
     Construct a GeoJSON `dict` from WKT (`string`).
     """
-    sio = StringIO.StringIO(string)
+    sio = io.StringIO(string)
     # NOTE: This is not the intended purpose of `tokenize`, but it works.
     tokens = (x[1] for x in tokenize.generate_tokens(sio.readline))
     tokens = __tokenize_wkt(tokens)

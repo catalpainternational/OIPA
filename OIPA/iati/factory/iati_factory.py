@@ -1,24 +1,25 @@
+from builtins import object
 import iati
 import geodata
 import factory
 
 
 class TitleFactory(factory.django.DjangoModelFactory):
-    class Meta:
+    class Meta(object):
         model = iati.models.Title
 
     title = 'title factory'
 
 
 class DescriptionFactory(factory.django.DjangoModelFactory):
-    class Meta:
+    class Meta(object):
         model = iati.models.Description
 
     description = 'description factory'
 
 
 class ActivityFactory(factory.django.DjangoModelFactory):
-    class Meta:
+    class Meta(object):
         model = iati.models.Activity
         django_get_or_create = ('id',)
 
@@ -30,7 +31,7 @@ class ActivityFactory(factory.django.DjangoModelFactory):
 
 
 class RegionFactory(factory.django.DjangoModelFactory):
-    class Meta:
+    class Meta(object):
         model = geodata.models.Region
         django_get_or_create = ('code',)
 
@@ -39,7 +40,7 @@ class RegionFactory(factory.django.DjangoModelFactory):
 
 
 class CountryFactory(factory.django.DjangoModelFactory):
-    class Meta:
+    class Meta(object):
         model = geodata.models.Country
         django_get_or_create = ('code',)
 
@@ -49,7 +50,7 @@ class CountryFactory(factory.django.DjangoModelFactory):
 
 
 class CityFactory(factory.django.DjangoModelFactory):
-    class Meta:
+    class Meta(object):
         model = geodata.models.City
         django_get_or_create = ('id',)
 
@@ -59,7 +60,7 @@ class CityFactory(factory.django.DjangoModelFactory):
 
 
 class SectorFactory(factory.django.DjangoModelFactory):
-    class Meta:
+    class Meta(object):
         model = iati.models.Sector
         django_get_or_create = ('code',)
 
@@ -69,7 +70,7 @@ class SectorFactory(factory.django.DjangoModelFactory):
 
 
 class OrganisationFactory(factory.django.DjangoModelFactory):
-    class Meta:
+    class Meta(object):
         model = iati.models.Organisation
         django_get_or_create = ('code',)
 

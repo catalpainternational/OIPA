@@ -1,3 +1,4 @@
+from builtins import object
 from django.db.models import Q
 from tastypie.constants import ALL
 from tastypie.resources import ModelResource
@@ -8,7 +9,7 @@ from translation_model.models import TranslationModel
 
 class UnescoIndicatorResource(ModelResource):
 
-    class Meta:
+    class Meta(object):
         queryset = UnescoIndicatorData.objects.all()
         resource_name = 'unesco-indicators'
         include_resource_uri = False

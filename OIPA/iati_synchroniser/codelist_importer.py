@@ -1,7 +1,11 @@
 from __future__ import print_function
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import object
 __author__ = 'vincentvantwestende'
 from iati.models import *
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 from lxml import etree
 from geodata.models import Country, Region
 from iati.models import RegionVocabulary
@@ -11,7 +15,7 @@ import datetime
 
 logger = logging.getLogger(__name__)
 
-class CodeListImporter():
+class CodeListImporter(object):
 
         # class wide functions
     def return_first_exist(self, xpath_find):
@@ -20,7 +24,7 @@ class CodeListImporter():
              xpath_find = None
         else:
             try:
-                xpath_find = unicode(xpath_find[0], errors='ignore')
+                xpath_find = str(xpath_find[0], errors='ignore')
             except:
                 xpath_find = xpath_find[0]
 
@@ -45,7 +49,7 @@ class CodeListImporter():
             else:
                 # xpath_find = xpath_find[0].encode('utf-8')
                 try:
-                    xpath_find = unicode(xpath_find[0], errors='ignore')
+                    xpath_find = str(xpath_find[0], errors='ignore')
                 except:
                     xpath_find = xpath_find[0]
 
@@ -329,7 +333,7 @@ class CodeListImporter():
                     new_codelist.save()
 
             cur_downloaded_xml = "http://www.iatistandard.org/105/codelists/downloads/clv1/codelist/" + name + ".xml"
-            cur_file_opener = urllib2.build_opener()
+            cur_file_opener = urllib.request.build_opener()
             cur_xml_file = cur_file_opener.open(cur_downloaded_xml)
 
             context2 = etree.iterparse(cur_xml_file, tag=name)
@@ -345,8 +349,8 @@ class CodeListImporter():
         get_codelist_data(name="DocumentCategory-category")
 
         #get the file
-        downloaded_xml = urllib2.Request("http://www.iatistandard.org/105/codelists/downloads/clv1/codelist.xml")
-        file_opener = urllib2.build_opener()
+        downloaded_xml = urllib.request.Request("http://www.iatistandard.org/105/codelists/downloads/clv1/codelist.xml")
+        file_opener = urllib.request.build_opener()
         xml_file = file_opener.open(downloaded_xml)
         context = etree.iterparse(xml_file, tag='codelist')
         fast_iter(context, get_codelist_data)

@@ -1,3 +1,4 @@
+from builtins import str
 # tasks.py
 from iati_synchroniser.models import IatiXmlSource
 from django_rq import job

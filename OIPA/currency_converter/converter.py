@@ -1,7 +1,8 @@
 from __future__ import print_function
+from builtins import object
 from iati.models import Transaction
 
-class CurrencyConverter():
+class CurrencyConverter(object):
 
     def convert_all(self):
         for entry in Transaction.objects.all():

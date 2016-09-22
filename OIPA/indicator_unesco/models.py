@@ -1,3 +1,4 @@
+from builtins import object
 from django.db import models
 from geodata.models import Country
 
@@ -19,7 +20,7 @@ class UnescoIndicatorData(models.Model):
     created = models.DateTimeField(auto_now=True)
     updated = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
+    class Meta(object):
         verbose_name_plural = "Unesco indicator data"
 
     def __unicode__(self):

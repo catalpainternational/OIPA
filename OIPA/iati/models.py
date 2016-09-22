@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+from builtins import object
 
 from django.db import models
 from geodata.models import Country, Region
@@ -451,7 +452,7 @@ class Activity(models.Model):
     def __unicode__(self):
         return self.id
 
-    class Meta:
+    class Meta(object):
         verbose_name_plural = "activities"
 
 class ActivitySearchData(models.Model):
@@ -472,7 +473,7 @@ class ActivityParticipatingOrganisation(models.Model):
     role = models.ForeignKey(OrganisationRole, null=True, blank=True)
     name = models.TextField(default="")
 
-    class Meta:
+    class Meta(object):
         unique_together = (('activity', 'organisation', 'role'),)
 
     def __unicode__(self,):
@@ -497,7 +498,7 @@ class ActivitySector(models.Model):
     vocabulary = models.ForeignKey(Vocabulary, null=True, blank=True)
     percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True, default=None)
 
-    class Meta:
+    class Meta(object):
         unique_together = (('activity', 'sector'),)
 
     def __unicode__(self,):
@@ -698,7 +699,7 @@ class Description(models.Model):
     type = models.ForeignKey(DescriptionType, related_name="description_type", null=True, blank=True)
     rsr_description_type_id = models.IntegerField(null=True, default=None) # remove
 
-    class Meta:
+    class Meta(object):
         unique_together = (('activity', 'type', 'language'),)
 
     def __unicode__(self,):

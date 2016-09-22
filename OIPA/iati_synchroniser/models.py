@@ -1,3 +1,4 @@
+from builtins import object
 from django.db import models
 import datetime
 from django.utils.safestring import mark_safe
@@ -58,7 +59,7 @@ class IatiXmlSource(models.Model):
     is_parsed = models.BooleanField(null=False, default=False)
     added_manually = models.BooleanField(null=False, default=True)
 
-    class Meta:
+    class Meta(object):
         verbose_name_plural = "IATI XML sources"
         ordering = ["ref"]
 

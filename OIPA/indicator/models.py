@@ -1,3 +1,4 @@
+from builtins import object
 import os
 from django.db import models
 from django.utils.text import slugify
@@ -48,7 +49,7 @@ class IndicatorData(models.Model):
     year = models.IntegerField(max_length=5)
     selection_type = models.CharField(max_length=255, null=True, blank=True)
 
-    class Meta:
+    class Meta(object):
         verbose_name_plural = "indicator data"
 
     def __unicode__(self):

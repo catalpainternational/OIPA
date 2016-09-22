@@ -1,10 +1,12 @@
+from builtins import next
+from builtins import object
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 import csv
 from indicator.models import IndicatorTopic, IndicatorSource, Indicator, IndicatorData, Country, Region
 import os.path
 
-class WBI_Parser():
+class WBI_Parser(object):
 
     def import_wbi_indicators(self):
         self.update_country_data()

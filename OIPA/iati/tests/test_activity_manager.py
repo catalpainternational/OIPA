@@ -1,8 +1,10 @@
+from builtins import str
+from builtins import object
 from iati.activity_manager import ActivityQuerySet
 from iati import models
 import pytest
 
-class TestActivityQuerySet:
+class TestActivityQuerySet(object):
 	@pytest.mark.parametrize("input,expected", [
     	('food', '+food*'), #should return the query word with a prefix '+' and a suffix '*'
     	('food water aids', '+food* +water* +aids*'), #should also work when multiple words are used

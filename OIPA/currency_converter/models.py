@@ -1,3 +1,4 @@
+from builtins import object
 from django.db import models
 from iati.models import Transaction
 from currency_converter.converter import CurrencyConverter
@@ -5,7 +6,7 @@ from currency_converter.converter import CurrencyConverter
 class Converter(models.Model):
     date_updated = models.DateTimeField(auto_now=True, editable=False)
 
-    class Meta:
+    class Meta(object):
         verbose_name_plural = "Currency converter"
 
     def __unicode__(self,):

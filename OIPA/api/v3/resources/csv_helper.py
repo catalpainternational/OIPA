@@ -1,6 +1,9 @@
 from __future__ import print_function
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 import csv
-import StringIO
+import io
 
 from tastypie.serializers import Serializer
 
@@ -18,10 +21,10 @@ class CsvHelper(Serializer):
             options = options or {}
             data = self.to_simple(data, options)
 
-            raw_data = StringIO.StringIO()
+            raw_data = io.StringIO()
             first = True
 
-            if "meta" in data.keys():#if multiple objects are returned
+            if "meta" in list(data.keys()):#if multiple objects are returned
                 objects = data.get("objects")
 
                 for value in objects:
@@ -29,7 +32,7 @@ class CsvHelper(Serializer):
                     test = {}
                     self.flatten("", value, test)
                     if first:
-                        writer = csv.DictWriter(raw_data, test.keys(), quotechar="'", quoting=csv.QUOTE_NONNUMERIC)
+                        writer = csv.DictWriter(raw_data, list(test.keys()), quotechar="'", quoting=csv.QUOTE_NONNUMERIC)
                         writer.writeheader()
                         writer.writerow(test)
                         first=False
@@ -39,7 +42,7 @@ class CsvHelper(Serializer):
                 test = {}
                 self.flatten("", data, test)
                 if first:
-                    writer = csv.DictWriter(raw_data, test.keys(), quotechar="'", quoting=csv.QUOTE_NONNUMERIC)
+                    writer = csv.DictWriter(raw_data, list(test.keys()), quotechar="'", quoting=csv.QUOTE_NONNUMERIC)
                     writer.writeheader()
                     writer.writerow(test)
                     first=False
@@ -58,12 +61,12 @@ class CsvHelper(Serializer):
                 self.flatten(parent_name, value, odict)
         # if dictionary, flatten the dictionary
         elif isinstance(data, dict):
-            for (key, value) in data.items():
+            for (key, value) in list(data.items()):
                 # if no dict or list, add to odict
                 if not isinstance(value, (dict, list)):
                     if parent_name:
                         key = parent_name + "_" + key
-                    value = unicode(value)
+                    value = str(value)
                     odict[key] = value.encode('utf-8', 'ignore')
                 else:
                     self.flatten(key, value, odict)

@@ -1,3 +1,6 @@
+from builtins import str
+from builtins import range
+from builtins import object
 from lxml import etree
 from iati import models
 from re import sub
@@ -15,7 +18,7 @@ from .filegrabber import FileGrabber
 from .management.commands.total_budget_updater import TotalBudgetUpdater
 
 
-class Parser():
+class Parser(object):
 
     xml_source_ref = None
 
@@ -135,7 +138,7 @@ class Parser():
              xpath_find = None
         else:
             try:
-                xpath_find = unicode(xpath_find[0], errors='ignore')
+                xpath_find = str(xpath_find[0], errors='ignore')
             except:
                 xpath_find = xpath_find[0]
 

@@ -1,4 +1,5 @@
 from __future__ import print_function
+from builtins import str
 from django.contrib import admin
 from django.shortcuts import get_object_or_404
 from multiupload.admin import MultiUploadAdmin

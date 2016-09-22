@@ -1,3 +1,4 @@
+from builtins import object
 
 from tastypie.resources import ModelResource
 from geodata.models import Country, Region, City
@@ -11,7 +12,7 @@ class IndicatorFiltersResource(ModelResource):
     name = fields.CharField(attribute='name')
 
 
-    class Meta:
+    class Meta(object):
         queryset = Indicator.objects.all()
         resource_name = 'indicator-filters'
         serializer = Serializer(formats=['xml', 'json'])
@@ -26,7 +27,7 @@ class IndicatorFiltersResource(ModelResource):
 
 
 class OnlyCountryResource(ModelResource):
-    class Meta:
+    class Meta(object):
         queryset = Country.objects.all().order_by('name')
         include_resource_uri = False
         excludes = ['center_longlat', 'dac_country_code', 'dac_region_code', 'dac_region_name', 'iso3', 'language', 'polygon']
@@ -35,13 +36,13 @@ class OnlyCountryResource(ModelResource):
 
 
 class OnlyRegionResource(ModelResource):
-    class Meta:
+    class Meta(object):
         queryset = Region.objects.all().distinct().order_by('code')
         resource_name = 'region'
         include_resource_uri = False
 
 class OnlyCityResource(ModelResource):
-    class Meta:
+    class Meta(object):
         queryset = City.objects.all().order_by('name')
         resource_name = 'city'
         include_resource_uri = False

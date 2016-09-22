@@ -1,4 +1,11 @@
 from __future__ import print_function
+from __future__ import division
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+from builtins import object
+from past.utils import old_div
 
 from indicator.models import Indicator, IndicatorData
 from django.db import IntegrityError
@@ -6,10 +13,10 @@ from django.core.exceptions import ValidationError
 from geodata.models import Country, City
 import os.path
 import ujson
-import StringIO
+import io
 from decimal import Decimal
 
-class IndicatorAdminTools():
+class IndicatorAdminTools(object):
 
 
     def old_to_new_urbnnrs_country(self,indicator_id, name, data_type):
@@ -95,7 +102,7 @@ class IndicatorAdminTools():
         csv_reader = csv.DictReader(csv_fp, fieldnames=[], restkey='undefined-fieldnames', delimiter=delimiter, quotechar=quote_character)
 
         current_row = 0
-        raw_data = StringIO.StringIO()
+        raw_data = io.StringIO()
 
 
         for row in csv_reader:
@@ -117,7 +124,7 @@ class IndicatorAdminTools():
                     csv_value = Decimal(csv_value)
                     if 1 < csv_value <= 1000:
 
-                        csv_value = csv_value / 1000
+                        csv_value = old_div(csv_value, 1000)
                         row['value'] = csv_value
 
             if data_type == "n" and keep_dot == "0":
@@ -151,7 +158,7 @@ class IndicatorAdminTools():
         json_data = open(location)
         indicator_names = ujson.load(json_data)
 
-        for key, value in indicator_names.items():
+        for key, value in list(indicator_names.items()):
 
             try:
                 new_indicator = Indicator(id=key, friendly_label=value["name"], type_data=value["type_data"])

@@ -1,10 +1,12 @@
+from builtins import str
+from builtins import object
 from django.db.models import query, Q
 import operator
 from functools import reduce
 
 
 class ActivityQuerySet(query.QuerySet):
-    class Meta:
+    class Meta(object):
         DEFAULT_SEARCH_FIELDS = ('titles', 'descriptions', 'identifiers')
         SEARCHABLE_PROPERTIES = {
             'identifiers': {
@@ -88,5 +90,5 @@ class ActivityQuerySet(query.QuerySet):
             if field in self.Meta.SEARCHABLE_PROPERTIES:
                 property = self.Meta.SEARCHABLE_PROPERTIES.get(field)
                 prepared_filter.append((property.get('name') + property.get('method'), fts_query if property.get('method') == '__search' else query))
-            else: raise Exception('unsupported search_field. Choices are: ' +  str(self.Meta.SEARCHABLE_PROPERTIES.keys()))
+            else: raise Exception('unsupported search_field. Choices are: ' +  str(list(self.Meta.SEARCHABLE_PROPERTIES.keys())))
         return prepared_filter

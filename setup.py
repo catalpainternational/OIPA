@@ -8,7 +8,7 @@ install_requirements = parse_requirements('OIPA/requirements.txt', session=False
 requirements = [str(ir.req) for ir in install_requirements]
 
 setup(name='OIPA',
-      version='3.0.0.dev1',
+      version='3.0.0.dev2',
       author='Catalpa',
       description='A fork of https://github.com/zimmerman-zimmerman/OIPA used at Catalpa.',
       url='https://github.com/catalpainternational/oipa',

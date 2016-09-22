@@ -1,3 +1,4 @@
+from builtins import object
 from django.contrib.gis.db import models
 
 
@@ -32,7 +33,7 @@ class Country(models.Model):
     geom = models.MultiPolygonField(srid=4326)
     objects = models.GeoManager()
 
-    class Meta:
+    class Meta(object):
         verbose_name_plural = "countries"
 
     def __unicode__(self):
@@ -57,7 +58,7 @@ class City(models.Model):
     def __unicode__(self):
         return self.name
 
-    class Meta:
+    class Meta(object):
         verbose_name_plural = "cities"
 
 
@@ -128,7 +129,7 @@ class Adm1Region(models.Model):
     def __unicode__(self):
         return self.name
 
-    class Meta:
+    class Meta(object):
         verbose_name_plural = "admin1 regions"
 
 

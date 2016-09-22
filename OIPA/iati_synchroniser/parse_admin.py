@@ -1,4 +1,5 @@
 from __future__ import print_function
+from builtins import object
 from iati.models import Activity
 import logging
 from iati_synchroniser.models import IatiXmlSource, Publisher
@@ -8,7 +9,7 @@ from iati.filegrabber import FileGrabber
 
 logger = logging.getLogger(__name__)
 
-class ParseAdmin():
+class ParseAdmin(object):
 
     def parseAll(self):
 
