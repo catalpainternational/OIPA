@@ -5,7 +5,6 @@ python-dateutil==2.2
 python-mimeparse==0.1.4
 defusedxml==0.4.1
 contexttimer==0.3.0
-mechanize==0.2.5
 django-suit==0.2.11
 objgraph==1.8.1
 ujson==1.33

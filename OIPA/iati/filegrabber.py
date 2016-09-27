@@ -5,7 +5,6 @@ from builtins import object
 import urllib.request, urllib.error, urllib.parse
 import http.client
 import logging
-import mechanize
 import http.cookiejar
 
 logger = logging.getLogger(__name__)
@@ -13,6 +12,7 @@ logger = logging.getLogger(__name__)
 class FileGrabber(object):
 
     def get_the_file(self, url, try_number = 0):
+        import mechanize
         try:
 
             br = mechanize.Browser()
@@ -36,13 +36,6 @@ class FileGrabber(object):
 
             response = br.open(url, timeout=80)
             return response
-
-            # headers = {'User-agent': 'Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.16 Safari/537.36'}
-            # iati_file_url_object = mechanize.Request(url, headers=headers)
-            # file_opener = mechanize.build_opener()
-            # iati_file = file_opener.open(iati_file_url_object)
-            # return iati_file
-
 
         except urllib.error.HTTPError as e:
             logger.info('HTTPError (url=' + url + ') = ' + str(e.code))
