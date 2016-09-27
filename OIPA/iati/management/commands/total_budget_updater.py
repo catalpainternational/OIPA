@@ -9,7 +9,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 class Command(BaseCommand):
-    option_list = BaseCommand.option_list
     counter = 0
 
     def handle(self, *args, **options):
