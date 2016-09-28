@@ -59,7 +59,7 @@ class IatiXmlSource(models.Model):
     is_parsed = models.BooleanField(null=False, default=False)
     added_manually = models.BooleanField(null=False, default=True)
 
-    class Meta(object):
+    class Meta:
         verbose_name_plural = "IATI XML sources"
         ordering = ["ref"]
 

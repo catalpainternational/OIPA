@@ -15,7 +15,7 @@ from api.v2.resources.helper_resources import *
 
 class CityResource(ModelResource):
 
-    class Meta(object):
+    class Meta:
         queryset = City.objects.all()
         resource_name = 'cities'
         include_resource_uri = False
@@ -28,7 +28,7 @@ class CountryResource(ModelResource):
     iso2 = fields.CharField('code', null=True)
     # activities = fields.ToManyField(RecipientCountryResource, attribute=lambda bundle: activity_recipient_country.objects.filter(country=bundle.obj), null=True)
 
-    class Meta(object):
+    class Meta:
         queryset = Country.objects.all()
         resource_name = 'countries'
         excludes = ['polygon', 'code']
@@ -42,7 +42,7 @@ class CountryResource(ModelResource):
 
 class CountryGeoResource(ModelResource):
 
-    class Meta(object):
+    class Meta:
         queryset = Country.objects.all()
         resource_name = 'country-polygons'
         excludes = ['dac_country_code', 'dac_region_code', 'dac_region_name', 'iso3', 'language']
@@ -52,7 +52,7 @@ class CountryGeoResource(ModelResource):
 
 class RegionResource(ModelResource):
 
-    class Meta(object):
+    class Meta:
         queryset = Region.objects.all()
         resource_name = 'regions'
         serializer = Serializer(formats=['xml', 'json'])
@@ -61,7 +61,7 @@ class RegionResource(ModelResource):
 
 class SectorResource(ModelResource):
 
-    class Meta(object):
+    class Meta:
         queryset = Sector.objects.all()
         resource_name = 'sectors'
         serializer = Serializer(formats=['xml', 'json'])
@@ -69,7 +69,7 @@ class SectorResource(ModelResource):
 
 
 class IndicatorResource(ModelResource):
-    class Meta(object):
+    class Meta:
         queryset = Indicator.objects.all()
         resource_name = 'indicator'
         include_resource_uri = False
@@ -78,7 +78,7 @@ class IndicatorResource(ModelResource):
 
 class IndicatorDataResource(ModelResource):
 
-    class Meta(object):
+    class Meta:
         queryset = IndicatorData.objects.all()
         excludes = ['country.language', 'language']
         resource_name = 'indicatordata'
@@ -100,7 +100,7 @@ class OrganisationResource(ModelResource):
     type = fields.OneToOneField(OrganisationTypeResource, 'type', full=True, null=True)
     org_name = fields.CharField('name', null=True)
 
-    class Meta(object):
+    class Meta:
         queryset = Organisation.objects.all()
         resource_name = 'organisations'
         serializer = Serializer(formats=['xml', 'json'])
@@ -137,7 +137,7 @@ class ActivityListResource(ModelResource):
             return None
 
 
-    class Meta(object):
+    class Meta:
         queryset = Activity.objects.all()
         resource_name = 'activity-list'
         max_limit = 100

@@ -6,7 +6,7 @@ from currency_converter.converter import CurrencyConverter
 class Converter(models.Model):
     date_updated = models.DateTimeField(auto_now=True, editable=False)
 
-    class Meta(object):
+    class Meta:
         verbose_name_plural = "Currency converter"
 
     def __unicode__(self,):

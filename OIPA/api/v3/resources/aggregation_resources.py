@@ -22,7 +22,7 @@ from api.v3.resources.custom_call_helper import CustomCallHelper
 
 class ActivityCountResource(ModelResource):
 
-    class Meta(object):
+    class Meta:
         #aid_type is used as dummy
         queryset = AidType.objects.all()
         resource_name = 'activity-count'
@@ -154,7 +154,7 @@ class ActivityCountResource(ModelResource):
 
 class ActivityAggregatedAnyResource(ModelResource):
 
-    class Meta(object):
+    class Meta:
         queryset = Activity.objects.none()
         resource_name = 'activity-aggregate-any'
         include_resource_uri = True
@@ -381,7 +381,7 @@ class ActivityAggregatedAnyResource(ModelResource):
 
 class ActivityAggregatedAnyNamesResource(ModelResource):
 
-    class Meta(object):
+    class Meta:
         #aid_type is used as dummy
         queryset = AidType.objects.all()
         resource_name = 'activity-aggregate-any-names'

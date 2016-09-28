@@ -15,38 +15,38 @@ from api.cache import NoTransformCache
 from api.v2.resources.advanced_resources import *
 
 class ActivityViewAidTypeResource(ModelResource):
-    class Meta(object):
+    class Meta:
         queryset = AidType.objects.all()
         include_resource_uri = False
         excludes = ['description']
 
 class ActivityViewFlowTypeResource(ModelResource):
-    class Meta(object):
+    class Meta:
         queryset = FlowType.objects.all()
         include_resource_uri = False
         excludes = ['description']
 
 class ActivityViewSectorResource(ModelResource):
-    class Meta(object):
+    class Meta:
         queryset = Sector.objects.all()
         include_resource_uri = False
         excludes = ['description']
 
 class ActivityViewCollaborationTypeResource(ModelResource):
-    class Meta(object):
+    class Meta:
         queryset = CollaborationType.objects.all()
         include_resource_uri = False
         excludes = ['description', 'language']
 
 class ActivityViewTiedStatusResource(ModelResource):
-    class Meta(object):
+    class Meta:
         queryset = TiedStatus.objects.all()
         include_resource_uri = False
         excludes = ['description']
 
 class ActivityViewOrganisationResource(ModelResource):
 
-    class Meta(object):
+    class Meta:
         queryset = Organisation.objects.all()
         include_resource_uri = False
         excludes = ['abbreviation', 'reported_by_organisation']
@@ -54,7 +54,7 @@ class ActivityViewOrganisationResource(ModelResource):
 
 class ActivityViewTransactionResource(ModelResource):
 
-    class Meta(object):
+    class Meta:
         queryset = Transaction.objects.all()
         include_resource_uri = False
         excludes = ['id', 'ref', 'description', 'provider_activity']
@@ -68,7 +68,7 @@ class ActivityViewTransactionResource(ModelResource):
         return bundle
 
 class ActivityViewActivityStatusResource(ModelResource):
-    class Meta(object):
+    class Meta:
         queryset = ActivityStatus.objects.all()
         include_resource_uri = False
         excludes = ['language']
@@ -84,14 +84,14 @@ class ActivityViewActivityStatusResource(ModelResource):
 #         return bundle
 
 class ActivityViewSectorResource(ModelResource):
-    class Meta(object):
+    class Meta:
         queryset = Sector.objects.all()
         include_resource_uri = False
 
 class ActivityViewSectorsResource(ModelResource):
     # name = fields.ForeignKey(ActivityViewSectorResource, 'name', null=True, full=True)
 
-    class Meta(object):
+    class Meta:
         queryset = ActivitySector.objects.all()
         include_resource_uri = False
         excludes = ['id', 'alt_sector_name']
@@ -119,7 +119,7 @@ class ActivityResource(ModelResource):
     documents = fields.ToManyField(DocumentResource, 'document_link_set', full=True, null=True)
     date_updated = fields.DateTimeField('last_updated_datetime', null=True)
 
-    class Meta(object):
+    class Meta:
         queryset = Activity.objects.all()
         resource_name = 'activities'
         max_limit = 100

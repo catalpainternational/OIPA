@@ -9,7 +9,7 @@ from translation_model.models import TranslationModel
 
 class UnescoIndicatorResource(ModelResource):
 
-    class Meta(object):
+    class Meta:
         queryset = UnescoIndicatorData.objects.all()
         resource_name = 'unesco-indicators'
         include_resource_uri = False

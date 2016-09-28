@@ -4,6 +4,6 @@ import iati
 
 
 class ActivityListSerializer(serializers.ModelSerializer):
-    class Meta(object):
+    class Meta:
         model = iati.models.Activity
         fields = ('id',)

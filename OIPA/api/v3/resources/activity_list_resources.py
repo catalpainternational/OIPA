@@ -43,7 +43,7 @@ class ActivityListResource(ActivityResource):
     documents = fields.ToManyField(DocumentResource, 'documentlink_set', full=True, null=True)
     transactions = fields.ToManyField(ActivityViewTransactionResource, 'transaction_set', full=True, null=True, use_in='detail')
 
-    class Meta(object):
+    class Meta:
         queryset = Activity.objects.all()
         resource_name = 'activity-list'
         max_limit = 100

@@ -19,7 +19,7 @@ from api.v3.resources.custom_call_helper import CustomCallHelper
 
 class IndicatorAggregationResource(ModelResource):
 
-    class Meta(object):
+    class Meta:
         #aid_type is used as dummy
         queryset = AidType.objects.all()
         resource_name = 'indicator-region-aggregation'
@@ -73,7 +73,7 @@ class IndicatorAggregationResource(ModelResource):
 
 class IndicatorCountryDataResource(ModelResource):
 
-    class Meta(object):
+    class Meta:
         #aid_type is used as dummy
         queryset = AidType.objects.all()
         resource_name = 'indicator-country-data'
@@ -150,7 +150,7 @@ class IndicatorCountryDataResource(ModelResource):
 
 class IndicatorCityDataResource(ModelResource):
 
-    class Meta(object):
+    class Meta:
         #aid_type is used as dummy
         queryset = AidType.objects.all()
         resource_name = 'indicator-city-data'
@@ -232,7 +232,7 @@ class IndicatorCityDataResource(ModelResource):
 
 class IndicatorRegionDataResource(ModelResource):
 
-    class Meta(object):
+    class Meta:
         #aid_type is used as dummy
         queryset = AidType.objects.all()
         resource_name = 'indicator-region-data'
@@ -305,7 +305,7 @@ class IndicatorRegionDataResource(ModelResource):
 
 class IndicatorDataResource(ModelResource):
 
-    class Meta(object):
+    class Meta:
         #aid_type is used as dummy
         queryset = AidType.objects.all()
         resource_name = 'indicator-data'
@@ -478,7 +478,7 @@ class IndicatorDataResource(ModelResource):
 
 class IndicatorFilterOptionsResource(ModelResource):
 
-    class Meta(object):
+    class Meta:
         #aid_type is used as dummy
         queryset = AidType.objects.all()
         resource_name = 'indicator-filter-options'

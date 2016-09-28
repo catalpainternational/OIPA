@@ -49,7 +49,7 @@ class IndicatorData(models.Model):
     year = models.IntegerField(max_length=5)
     selection_type = models.CharField(max_length=255, null=True, blank=True)
 
-    class Meta(object):
+    class Meta:
         verbose_name_plural = "indicator data"
 
     def __unicode__(self):

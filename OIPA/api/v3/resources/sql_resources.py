@@ -19,7 +19,7 @@ from api.v3.resources.custom_call_helper import CustomCallHelper
 
 class ActivityFilterOptionsResource(ModelResource):
 
-    class Meta(object):
+    class Meta:
         #aid_type is used as dummy
         queryset = AidType.objects.all()
         resource_name = 'activity-filter-options'
@@ -171,7 +171,7 @@ class ActivityFilterOptionsResource(ModelResource):
 
 class ActivityFilterOptionsUnescoResource(ModelResource):
 
-    class Meta(object):
+    class Meta:
         #aid_type is used as dummy
         queryset = AidType.objects.all()
         resource_name = 'activity-filter-options-unesco'
@@ -366,7 +366,7 @@ class ActivityFilterOptionsUnescoResource(ModelResource):
 
 class CountryGeojsonResource(ModelResource):
 
-    class Meta(object):
+    class Meta:
         #aid_type is used as dummy
         queryset = AidType.objects.all()
         resource_name = 'country-geojson'
@@ -467,7 +467,7 @@ class CountryGeojsonResource(ModelResource):
 
 class Adm1RegionGeojsonResource(ModelResource):
 
-    class Meta(object):
+    class Meta:
         #aid_type is used as dummy
         queryset = AidType.objects.all()
         resource_name = 'adm1-region-geojson'
@@ -554,7 +554,7 @@ def dict2xml(d, root_node, first, listname):
 
 class CountryActivitiesResource(ModelResource):
 
-    class Meta(object):
+    class Meta:
         queryset = AidType.objects.none()
         resource_name = 'country-activities'
         include_resource_uri = True
@@ -753,7 +753,7 @@ class CountryActivitiesResource(ModelResource):
 
 class RegionActivitiesResource(ModelResource):
 
-    class Meta(object):
+    class Meta:
         #aid_type is used as dummy
         queryset = AidType.objects.none()
         resource_name = 'region-activities'
@@ -916,7 +916,7 @@ class RegionActivitiesResource(ModelResource):
 
 class GlobalActivitiesResource(ModelResource):
 
-    class Meta(object):
+    class Meta:
         queryset = AidType.objects.none()
         resource_name = 'global-activities'
         include_resource_uri = True
@@ -1023,7 +1023,7 @@ class GlobalActivitiesResource(ModelResource):
 
 class SectorActivitiesResource(ModelResource):
 
-    class Meta(object):
+    class Meta:
         queryset = AidType.objects.none()
         resource_name = 'sector-activities'
         include_resource_uri = True
@@ -1152,7 +1152,7 @@ class SectorActivitiesResource(ModelResource):
 
 class DonorActivitiesResource(ModelResource):
 
-    class Meta(object):
+    class Meta:
         queryset = AidType.objects.none()
         resource_name = 'donor-activities'
         include_resource_uri = True
@@ -1309,7 +1309,7 @@ class DonorActivitiesResource(ModelResource):
 
 class ActivityListVisResource(ModelResource):
 
-    class Meta(object):
+    class Meta:
         resource_name = 'activity-list-vis'
         allowed_methods = ['get']
 

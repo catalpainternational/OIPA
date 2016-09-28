@@ -6,7 +6,7 @@ from functools import reduce
 
 
 class ActivityQuerySet(query.QuerySet):
-    class Meta(object):
+    class Meta:
         DEFAULT_SEARCH_FIELDS = ('titles', 'descriptions', 'identifiers')
         SEARCHABLE_PROPERTIES = {
             'identifiers': {

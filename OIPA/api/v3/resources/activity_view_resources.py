@@ -23,37 +23,37 @@ from api.api_tools import comma_separated_parameter_to_list
 from api.paginator import NoCountPaginator
 
 class ActivityViewAidTypeResource(ModelResource):
-    class Meta(object):
+    class Meta:
         queryset = AidType.objects.all()
         include_resource_uri = False
         excludes = ['description']
 
 class ActivityViewFlowTypeResource(ModelResource):
-    class Meta(object):
+    class Meta:
         queryset = FlowType.objects.all()
         include_resource_uri = False
         excludes = ['description']
 
 class ActivityViewSectorResource(ModelResource):
-    class Meta(object):
+    class Meta:
         queryset = Sector.objects.all()
         include_resource_uri = False
         excludes = ['description']
 
 class ActivityViewCollaborationTypeResource(ModelResource):
-    class Meta(object):
+    class Meta:
         queryset = CollaborationType.objects.all()
         include_resource_uri = False
         excludes = ['description', 'language']
 
 class ActivityViewTiedStatusResource(ModelResource):
-    class Meta(object):
+    class Meta:
         queryset = TiedStatus.objects.all()
         include_resource_uri = False
         excludes = ['description']
 
 class ActivityViewOrganisationRoleResource(ModelResource):
-    class Meta(object):
+    class Meta:
         queryset = OrganisationRole.objects.all()
         include_resource_uri = False
 
@@ -63,7 +63,7 @@ class ActivityViewOrganisationResource(ModelResource):
     organisation_role = fields.ForeignKey(ActivityViewOrganisationRoleResource, 'organisation_role', full=True, null=True)
 
 
-    class Meta(object):
+    class Meta:
         queryset = Organisation.objects.all()
         include_resource_uri = False
         excludes = ['abbreviation', 'reported_by_organisation']
@@ -81,7 +81,7 @@ class ActivityViewTransactionResource(ModelResource):
     provider_organisation = fields.ForeignKey(ActivityViewOrganisationResource, 'provider_organisation', full=True, null=True)
     receiver_organisation = fields.ForeignKey(ActivityViewOrganisationResource, 'receiver_organisation', full=True, null=True)
 
-    class Meta(object):
+    class Meta:
         queryset = Transaction.objects.all()
         include_resource_uri = False
         excludes = ['id', 'ref', 'description', 'provider_activity']
@@ -100,7 +100,7 @@ class ActivityViewTransactionResource(ModelResource):
 class ActivityViewParticipatingOrganisationResource(ModelResource):
     organisation = fields.ToOneField(ActivityViewOrganisationResource, 'organisation', full=True, null=True)
 
-    class Meta(object):
+    class Meta:
         queryset = ActivityParticipatingOrganisation.objects.all()
         include_resource_uri = False
         excludes = ['id']
@@ -116,24 +116,24 @@ class ActivityViewParticipatingOrganisationResource(ModelResource):
 
 
 class ActivityViewActivityStatusResource(ModelResource):
-    class Meta(object):
+    class Meta:
         queryset = ActivityStatus.objects.all()
         include_resource_uri = False
         excludes = ['language']
 
 class ActivityViewActivityScopeResource(ModelResource):
-    class Meta(object):
+    class Meta:
         queryset = ActivityScope.objects.all()
         include_resource_uri = False
 
 class ActivityViewCurrencyResource(ModelResource):
-    class Meta(object):
+    class Meta:
         queryset = Currency.objects.all()
         include_resource_uri = False
         excludes = ['language']
 
 class ActivityViewContactInfoResource(ModelResource):
-    class Meta(object):
+    class Meta:
         queryset = ContactInfo.objects.all()
         include_resource_uri = False
         excludes = ['id']
@@ -142,7 +142,7 @@ class ActivityViewContactInfoResource(ModelResource):
 
 class ActivityLocationResource(ModelResource):
 
-    class Meta(object):
+    class Meta:
         queryset = Location.objects.all()
         include_resource_uri = False
         excludes = ['id', 'activity_description', 'adm_code', 'adm_country_adm1', 'adm_country_adm2',
@@ -152,7 +152,7 @@ class ActivityLocationResource(ModelResource):
 
 class ActivityResultResource(ModelResource):
 
-    class Meta(object):
+    class Meta:
         queryset = Result.objects.all()
         include_resource_uri = False
         excludes = ['id']
@@ -163,7 +163,7 @@ class ActivityResultResource(ModelResource):
 
 class RelatedActivityResource(ModelResource):
 
-    class Meta(object):
+    class Meta:
         queryset = RelatedActivity.objects.all()
         include_resource_uri = False
         excludes = ['id']
@@ -209,7 +209,7 @@ class ActivityResource(ModelResource):
     # vocabulary?
 
 
-    class Meta(object):
+    class Meta:
         queryset = Activity.objects.all()
         resource_name = 'activities'
         max_limit = 1000

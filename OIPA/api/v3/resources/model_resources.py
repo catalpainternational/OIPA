@@ -7,7 +7,7 @@ from api.v3.resources.helper_resources import *
 
 class RegionResource(ModelResource):
 
-    class Meta(object):
+    class Meta:
         queryset = Region.objects.all()
         resource_name = 'regions'
         include_resource_uri = False
@@ -16,7 +16,7 @@ class RegionResource(ModelResource):
 
 class CityResource(ModelResource):
 
-    class Meta(object):
+    class Meta:
         queryset = City.objects.all()
         resource_name = 'cities'
         include_resource_uri = False
@@ -37,7 +37,7 @@ class CountryResource(ModelResource):
     cities = fields.ToManyField(CityResource, 'city_set', full=True, null=True, use_in="detail")
 
 
-    class Meta(object):
+    class Meta:
         queryset = Country.objects.all()
         resource_name = 'countries'
         # excludes = ['polygon']
@@ -57,7 +57,7 @@ class CountryResource(ModelResource):
 
 class SectorResource(ModelResource):
 
-    class Meta(object):
+    class Meta:
         queryset = Sector.objects.all()
         resource_name = 'sectors'
         include_resource_uri = False
@@ -67,7 +67,7 @@ class SectorResource(ModelResource):
 class OrganisationResource(ModelResource):
     type = fields.OneToOneField(OrganisationTypeResource, 'type', full=True, null=True)
 
-    class Meta(object):
+    class Meta:
         queryset = Organisation.objects.all()
         resource_name = 'organisations'
         serializer = Serializer(formats=['xml', 'json'])
