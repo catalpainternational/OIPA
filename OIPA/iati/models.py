@@ -1,397 +1,446 @@
 from __future__ import unicode_literals
-from builtins import object
 
 from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
+
 from geodata.models import Country, Region
 from .activity_manager import ActivityQuerySet
 
 
+@python_2_unicode_compatible
 class ActivityDateType(models.Model):
     code = models.CharField(primary_key=True, max_length=20)
     name = models.CharField(max_length=200)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
 
+@python_2_unicode_compatible
 class ActivityStatus(models.Model):
     code = models.SmallIntegerField(primary_key=True)
     name = models.CharField(max_length=50)
     language = models.CharField(max_length=2)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
 
+@python_2_unicode_compatible
 class AidTypeCategory(models.Model):
     code = models.CharField(primary_key=True, max_length=3)
     name = models.CharField(max_length=200)
     description = models.TextField()
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
 
+@python_2_unicode_compatible
 class AidType(models.Model):
     code = models.CharField(primary_key=True, max_length=3)
     name = models.CharField(max_length=200)
     description = models.TextField()
     category = models.ForeignKey(AidTypeCategory)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
 
+@python_2_unicode_compatible
 class BudgetType(models.Model):
     code = models.SmallIntegerField(primary_key=True)
     name = models.CharField(max_length=20)
     language = models.CharField(max_length=2)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
 
+@python_2_unicode_compatible
 class CollaborationType(models.Model):
     code = models.SmallIntegerField(primary_key=True)
     name = models.CharField(max_length=100)
     description = models.TextField()
     language = models.CharField(max_length=2)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
 
+@python_2_unicode_compatible
 class ConditionType(models.Model):
     code = models.SmallIntegerField(primary_key=True)
     name = models.CharField(max_length=40)
     language = models.CharField(max_length=2)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
 
+@python_2_unicode_compatible
 class Currency(models.Model):
     code = models.CharField(primary_key=True, max_length=3)
     name = models.CharField(max_length=100)
     language = models.CharField(max_length=2)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
 
+@python_2_unicode_compatible
 class DescriptionType(models.Model):
     code = models.SmallIntegerField(primary_key=True)
     name = models.CharField(max_length=50)
     description = models.TextField()
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
 
+@python_2_unicode_compatible
 class DisbursementChannel(models.Model):
     code = models.SmallIntegerField(primary_key=True)
     name = models.TextField()
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
+@python_2_unicode_compatible
 class DocumentCategoryCategory(models.Model):
     code = models.CharField(primary_key=True, max_length=3)
     name = models.CharField(max_length=100)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
+@python_2_unicode_compatible
 class DocumentCategory(models.Model):
     code = models.CharField(primary_key=True, max_length=3)
     name = models.CharField(max_length=100)
     description = models.TextField()
     category = models.ForeignKey(DocumentCategoryCategory)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
+@python_2_unicode_compatible
 class FileFormat(models.Model):
     code = models.CharField(primary_key=True, max_length=100)
     name = models.CharField(max_length=100)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
 
+@python_2_unicode_compatible
 class FinanceTypeCategory(models.Model):
     code = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=50)
     description = models.TextField()
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
 
+@python_2_unicode_compatible
 class FinanceType(models.Model):
     code = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=220)
     category = models.ForeignKey(FinanceTypeCategory)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
 
+@python_2_unicode_compatible
 class FlowType(models.Model):
     code = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=150)
     description = models.TextField()
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
 
+@python_2_unicode_compatible
 class GazetteerAgency(models.Model):
     code = models.CharField(primary_key=True, max_length=3)
     name = models.CharField(max_length=80)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
 
+@python_2_unicode_compatible
 class GeographicalPrecision(models.Model):
     code = models.SmallIntegerField(primary_key=True)
     name = models.CharField(max_length=80)
     description = models.TextField()
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
+@python_2_unicode_compatible
 class GeographicLocationClass(models.Model):
     code = models.SmallIntegerField(primary_key=True)
     name = models.CharField(max_length=200)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
 
+@python_2_unicode_compatible
 class Language(models.Model):
     code = models.CharField(primary_key=True, max_length=2)
     name = models.CharField(max_length=80)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
+@python_2_unicode_compatible
 class LocationTypeCategory(models.Model):
     code = models.CharField(primary_key=True, max_length=10)
     name = models.CharField(max_length=100)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
+@python_2_unicode_compatible
 class LocationType(models.Model):
     code = models.CharField(primary_key=True, max_length=10)
     name = models.CharField(max_length=100)
     description = models.TextField(default="")
     category = models.ForeignKey(LocationTypeCategory)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
+@python_2_unicode_compatible
 class OrganisationIdentifier(models.Model):
     code = models.CharField(primary_key=True, max_length=20)
     abbreviation = models.CharField(max_length=30, default=None, null=True)
     name = models.CharField(max_length=250, default=None, null=True)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
 
+@python_2_unicode_compatible
 class OrganisationRole(models.Model):
     code = models.CharField(primary_key=True, max_length=20)
     name = models.CharField(max_length=20)
     description = models.TextField()
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
 
+@python_2_unicode_compatible
 class OrganisationType(models.Model):
     code = models.SmallIntegerField(primary_key=True)
     name = models.CharField(max_length=50)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
+@python_2_unicode_compatible
 class PolicyMarker(models.Model):
     code = models.SmallIntegerField(primary_key=True)
     name = models.CharField(max_length=200)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
 
+@python_2_unicode_compatible
 class PolicySignificance(models.Model):
     code = models.SmallIntegerField(primary_key=True)
     name = models.CharField(max_length=100)
     description = models.TextField()
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
 
+@python_2_unicode_compatible
 class PublisherType(models.Model):
     code = models.SmallIntegerField(primary_key=True)
     name = models.CharField(max_length=50)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
 
+@python_2_unicode_compatible
 class RelatedActivityType(models.Model):
     code = models.SmallIntegerField(primary_key=True)
     name = models.CharField(max_length=20)
     description = models.TextField()
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
 
+@python_2_unicode_compatible
 class ResultType(models.Model):
     code = models.SmallIntegerField(primary_key=True)
     name = models.CharField(max_length=30)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
+@python_2_unicode_compatible
 class SectorCategory(models.Model):
     code = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=100)
     description = models.TextField()
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
+@python_2_unicode_compatible
 class Sector(models.Model):
     code = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=100)
     description = models.TextField()
     category = models.ForeignKey(SectorCategory, null=True, blank=True)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
+@python_2_unicode_compatible
 class TiedStatus(models.Model):
     code = models.SmallIntegerField(primary_key=True)
     name = models.CharField(max_length=40)
     description = models.TextField()
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
 
+@python_2_unicode_compatible
 class TransactionType(models.Model):
     code = models.CharField(primary_key=True, max_length=2)
     name = models.CharField(max_length=40)
     description = models.TextField()
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
 
+@python_2_unicode_compatible
 class ValueType(models.Model):
     code = models.CharField(primary_key=True, max_length=2)
     name = models.CharField(max_length=40)
     description = models.TextField()
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
 
+@python_2_unicode_compatible
 class VerificationStatus(models.Model):
     code = models.SmallIntegerField(primary_key=True)
     name = models.CharField(max_length=20)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
 
+@python_2_unicode_compatible
 class Vocabulary(models.Model):
     code = models.CharField(primary_key=True, max_length=10)
     name = models.CharField(max_length=140)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
+@python_2_unicode_compatible
 class ActivityScope(models.Model):
     code = models.SmallIntegerField(primary_key=True)
     name = models.CharField(max_length=100)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
+@python_2_unicode_compatible
 class AidTypeFlag(models.Model):
     code = models.SmallIntegerField(primary_key=True)
     name = models.CharField(max_length=100)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
+@python_2_unicode_compatible
 class BudgetIdentifier(models.Model):
     code = models.CharField(primary_key=True, max_length=20)
     name = models.CharField(max_length=160)
     category = models.CharField(max_length=120)
     sector = models.CharField(max_length=100)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
+@python_2_unicode_compatible
 class BudgetIdentifierSectorCategory(models.Model):
     code = models.SmallIntegerField(primary_key=True)
     name = models.CharField(max_length=160)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
+@python_2_unicode_compatible
 class BudgetIdentifierSector(models.Model):
     code = models.CharField(primary_key=True, max_length=20)
     name = models.CharField(max_length=160)
     category = models.ForeignKey(BudgetIdentifierSectorCategory)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
+@python_2_unicode_compatible
 class BudgetIdentifierVocabulary(models.Model):
     code = models.SmallIntegerField(primary_key=True)
     name = models.CharField(max_length=100)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
+@python_2_unicode_compatible
 class ContactType(models.Model):
     code = models.SmallIntegerField(primary_key=True)
     name = models.CharField(max_length=40)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
+@python_2_unicode_compatible
 class LoanRepaymentPeriod(models.Model):
     code = models.SmallIntegerField(primary_key=True)
     name = models.CharField(max_length=20)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
+@python_2_unicode_compatible
 class LoanRepaymentType(models.Model):
     code = models.SmallIntegerField(primary_key=True)
     name = models.CharField(max_length=40)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
+@python_2_unicode_compatible
 class RegionVocabulary(models.Model):
     code = models.SmallIntegerField(primary_key=True)
     name = models.CharField(max_length=20)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
 
+@python_2_unicode_compatible
 class Organisation(models.Model):
     code = models.CharField(primary_key=True, max_length=80)
     abbreviation = models.CharField(max_length=80, default="")
@@ -400,13 +449,14 @@ class Organisation(models.Model):
     name = models.CharField(max_length=250, default="")
     original_ref = models.CharField(max_length=80, default="")
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def total_activities(self):
         return self.activity_set.count()
 
 
+@python_2_unicode_compatible
 class Activity(models.Model):
     hierarchy_choices = (
         (1, u"Parent"),
@@ -449,7 +499,7 @@ class Activity(models.Model):
 
     objects = ActivityQuerySet.as_manager()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.id
 
     class Meta:
@@ -467,6 +517,7 @@ class ActivitySearchData(models.Model):
     search_reporting_organisation_name = models.TextField(max_length=80000)
     search_documentlink_title = models.TextField(max_length=80000)
 
+@python_2_unicode_compatible
 class ActivityParticipatingOrganisation(models.Model):
     activity = models.ForeignKey(Activity, related_name="participating_organisations")
     organisation = models.ForeignKey(Organisation, null=True, blank=True)
@@ -476,10 +527,11 @@ class ActivityParticipatingOrganisation(models.Model):
     class Meta:
         unique_together = (('activity', 'organisation', 'role'),)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s: %s - %s" % (self.activity, self.organisation, self.name)
 
 
+@python_2_unicode_compatible
 class ActivityPolicyMarker(models.Model):
     policy_marker = models.ForeignKey(PolicyMarker, null=True, blank=True)
     alt_policy_marker = models.CharField(max_length=200, default="")
@@ -487,10 +539,11 @@ class ActivityPolicyMarker(models.Model):
     vocabulary = models.ForeignKey(Vocabulary, null=True, blank=True)
     policy_significance = models.ForeignKey(PolicySignificance, null=True, blank=True)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.activity, self.policy_marker)
 
 
+@python_2_unicode_compatible
 class ActivitySector(models.Model):
     activity = models.ForeignKey(Activity)
     sector = models.ForeignKey(Sector, null=True, blank=True)
@@ -501,19 +554,21 @@ class ActivitySector(models.Model):
     class Meta:
         unique_together = (('activity', 'sector'),)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.activity, self.sector)
 
 
+@python_2_unicode_compatible
 class ActivityRecipientCountry(models.Model):
     activity = models.ForeignKey(Activity)
     country = models.ForeignKey(Country)
     percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True, default=None)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.activity, self.country)
 
 
+@python_2_unicode_compatible
 class CountryBudgetItem(models.Model):
     activity = models.ForeignKey(Activity)
     vocabulary = models.ForeignKey(BudgetIdentifierVocabulary, null=True)
@@ -522,39 +577,42 @@ class CountryBudgetItem(models.Model):
     percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True, default=None)
     description = models.TextField(default="")
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.activity, self.code)
 
 
+@python_2_unicode_compatible
 class ActivityRecipientRegion(models.Model):
     activity = models.ForeignKey(Activity)
     region = models.ForeignKey(Region)
     region_vocabulary = models.ForeignKey(RegionVocabulary, default=1)
     percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True, default=None)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.activity, self.region)
 
 
+@python_2_unicode_compatible
 class OtherIdentifier(models.Model):
     activity = models.ForeignKey(Activity)
     owner_ref = models.CharField(max_length=100, default="")
     owner_name = models.CharField(max_length=100, default="")
     identifier = models.CharField(max_length=100)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.activity, self.identifier)
 
 
+@python_2_unicode_compatible
 class ActivityWebsite(models.Model):
     activity = models.ForeignKey(Activity)
     url = models.CharField(max_length=150)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.activity, self.url)
 
 
-#   Class not truly correct, attributes fully open
+@python_2_unicode_compatible
 class ContactInfo(models.Model):
     activity = models.ForeignKey(Activity)
     person_name = models.CharField(max_length=100, default="")
@@ -566,10 +624,11 @@ class ContactInfo(models.Model):
     contact_type = models.ForeignKey(ContactType, null=True, blank=True)
     job_title = models.CharField(max_length=150, default="")
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.activity, self.person_name)
 
 
+@python_2_unicode_compatible
 class Transaction(models.Model):
     activity = models.ForeignKey(Activity)
     aid_type = models.ForeignKey(AidType, null=True, blank=True)
@@ -591,20 +650,11 @@ class Transaction(models.Model):
     currency = models.ForeignKey(Currency, null=True, blank=True)
     ref = models.CharField(max_length=255, default="")
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s: %s - %s" % (self.activity, self.transaction_type, self.transaction_date)
 
 
-# class transaction_description(models.Model):
-#     transaction = models.ForeignKey(transaction)
-#     type = models.ForeignKey(description_type, null=True, blank=True)
-#     language = models.ForeignKey(language, null=True, blank=True)
-#     description = models.TextField(default="")
-#
-#     def __unicode__(self,):
-#         return "%s - %s" % (self.code, self.name)
-
-
+@python_2_unicode_compatible
 class PlannedDisbursement(models.Model):
     activity = models.ForeignKey(Activity)
     period_start = models.CharField(max_length=100, default="")
@@ -614,20 +664,22 @@ class PlannedDisbursement(models.Model):
     currency = models.ForeignKey(Currency, null=True, blank=True)
     updated = models.DateField(null=True, default=None)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.activity, self.period_start)
 
 
+@python_2_unicode_compatible
 class RelatedActivity(models.Model):
     current_activity = models.ForeignKey(Activity, related_name="related_activities")
     type = models.ForeignKey(RelatedActivityType, max_length=200, null=True, blank=True)
     ref = models.CharField(max_length=200, default="")
     text = models.TextField(default="")
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.current_activity, self.type)
 
 
+@python_2_unicode_compatible
 class DocumentLink(models.Model):
     activity = models.ForeignKey(Activity)
     url = models.TextField(max_length=500)
@@ -635,10 +687,11 @@ class DocumentLink(models.Model):
     document_category = models.ForeignKey(DocumentCategory, null=True, blank=True)
     title = models.CharField(max_length=255, default="")
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.activity, self.url)
 
 
+@python_2_unicode_compatible
 class Result(models.Model):
     activity = models.ForeignKey(Activity, related_name="results")
     result_type = models.ForeignKey(ResultType, null=True, blank=True)
@@ -646,18 +699,20 @@ class Result(models.Model):
     description = models.TextField(default="")
     aggregation_status = models.BooleanField(default=False)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.activity, self.title)
 
 
+@python_2_unicode_compatible
 class ResultIndicatorMeasure(models.Model):
     code = models.SmallIntegerField(primary_key=True)
     name = models.CharField(max_length=40)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.code, self.name)
 
 
+@python_2_unicode_compatible
 class ResultIndicator(models.Model):
     result = models.ForeignKey(Result)
     title = models.CharField(max_length=200, default="")
@@ -667,9 +722,10 @@ class ResultIndicator(models.Model):
     comment = models.TextField(default="")
     measure = models.ForeignKey(ResultIndicatorMeasure, null=True, blank=True)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.result, self.year)
 
+@python_2_unicode_compatible
 class ResultIndicatorPeriod(models.Model):
     result_indicator = models.ForeignKey(ResultIndicator)
     period_start = models.CharField(max_length=50, default="")
@@ -679,19 +735,21 @@ class ResultIndicatorPeriod(models.Model):
     target = models.CharField(max_length=50, default="")
     actual = models.CharField(max_length=50, default="")
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s" % (self.result_indicator)
 
 
+@python_2_unicode_compatible
 class Title(models.Model):
     activity = models.ForeignKey(Activity)
     title = models.CharField(max_length=255, db_index=True)
     language = models.ForeignKey(Language, null=True, blank=True)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.activity, self.title)
 
 
+@python_2_unicode_compatible
 class Description(models.Model):
     activity = models.ForeignKey(Activity)
     description = models.TextField(default="", max_length=40000)
@@ -702,10 +760,11 @@ class Description(models.Model):
     class Meta:
         unique_together = (('activity', 'type', 'language'),)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.activity, self.type)
 
 
+@python_2_unicode_compatible
 class Budget(models.Model):
     activity = models.ForeignKey(Activity)
     type = models.ForeignKey(BudgetType, null=True, blank=True)
@@ -715,18 +774,20 @@ class Budget(models.Model):
     value_date = models.DateField(null=True, default=None)
     currency = models.ForeignKey(Currency, null=True, blank=True)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.activity, self.period_start)
 
 
+@python_2_unicode_compatible
 class Condition(models.Model):
     activity = models.ForeignKey(Activity)
     text = models.TextField(default="")
     type = models.ForeignKey(ConditionType, null=True, blank=True)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.activity, self.type)
 
+@python_2_unicode_compatible
 class GeographicVocabulary(models.Model):
     code = models.CharField(primary_key=True, max_length=20)
     name = models.CharField(max_length=255)
@@ -734,16 +795,18 @@ class GeographicVocabulary(models.Model):
     category = models.CharField(max_length=50)
     url = models.TextField(default="")
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.activity, self.type)
 
+@python_2_unicode_compatible
 class GeographicLocationReach(models.Model):
     code = models.SmallIntegerField(primary_key=True)
     name = models.CharField(max_length=80)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.activity, self.type)
 
+@python_2_unicode_compatible
 class OrganisationRegistrationAgency(models.Model):
     code = models.CharField(primary_key=True, max_length=20)
     name = models.CharField(max_length=160)
@@ -752,9 +815,10 @@ class OrganisationRegistrationAgency(models.Model):
     category_name = models.CharField(max_length=120)
     url = models.TextField(default="")
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.activity, self.type)
 
+@python_2_unicode_compatible
 class GeographicExactness(models.Model):
     code = models.SmallIntegerField(primary_key=True)
     name = models.CharField(max_length=160)
@@ -762,9 +826,10 @@ class GeographicExactness(models.Model):
     category = models.CharField(max_length=50)
     url = models.TextField(default="")
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.activity, self.type)
 
+@python_2_unicode_compatible
 class Location(models.Model):
     activity = models.ForeignKey(Activity)
     ref = models.CharField(max_length=200, default="") # new in v1.04
@@ -796,20 +861,22 @@ class Location(models.Model):
     feature_designation = models.ForeignKey(LocationType, null=True, blank=True, related_name="feature_designation") #new in v1.04
     location_class = models.ForeignKey(GeographicLocationClass, null=True, blank=True) #new in v1.04
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s - %s" % (self.activity, self.name)
 
 
+@python_2_unicode_compatible
 class Ffs(models.Model):
     activity = models.ForeignKey(Activity)
     extraction_date = models.DateField(null=True, default=None)
     priority = models.BooleanField(default=False)
     phaseout_year = models.IntegerField(null=True)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s" % (self.extraction_date)
 
 
+@python_2_unicode_compatible
 class FfsForecast(models.Model):
     ffs = models.ForeignKey(Ffs)
     year = models.IntegerField(null=True)
@@ -817,19 +884,21 @@ class FfsForecast(models.Model):
     value_date = models.DateField(null=True, default=None)
     value = models.DecimalField(max_digits=15, decimal_places=2)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s" % (self.year)
 
 
+@python_2_unicode_compatible
 class CrsAdd(models.Model):
     activity = models.ForeignKey(Activity)
     aid_type_flag = models.ForeignKey(AidTypeFlag)
     aid_type_flag_significance = models.IntegerField(null=True, default=None)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s" % (self.id)
 
 
+@python_2_unicode_compatible
 class CrsAddLoanTerms(models.Model):
     crs_add = models.ForeignKey(CrsAdd)
     rate_1 = models.IntegerField(null=True, default=None)
@@ -841,10 +910,11 @@ class CrsAddLoanTerms(models.Model):
     repayment_first_date = models.DateField(null=True, default=None)
     repayment_final_date = models.DateField(null=True, default=None)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s" % (self.crs_add_id)
 
 
+@python_2_unicode_compatible
 class CrsAddLoanStatus(models.Model):
     crs_add = models.ForeignKey(CrsAdd)
     year = models.IntegerField(null=True, default=None)
@@ -855,5 +925,5 @@ class CrsAddLoanStatus(models.Model):
     principal_arrears = models.DecimalField(null=True, default=None, max_digits=15, decimal_places=2)
     interest_arrears = models.DecimalField(null=True, default=None, max_digits=15, decimal_places=2)
 
-    def __unicode__(self,):
+    def __str__(self,):
         return "%s" % (self.year)
