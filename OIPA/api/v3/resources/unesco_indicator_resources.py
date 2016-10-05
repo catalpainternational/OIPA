@@ -1,3 +1,4 @@
+from builtins import object
 from django.db.models import Q
 from tastypie.constants import ALL
 from tastypie.resources import ModelResource

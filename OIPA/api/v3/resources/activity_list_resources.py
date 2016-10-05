@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from builtins import object
 # Tastypie specific
 from tastypie.resources import ModelResource
 from tastypie import fields
@@ -17,7 +19,7 @@ from api.v3.resources.helper_resources import DocumentResource
 
 #csv serializer
 from api.v3.resources.csv_serializer import CsvSerializer
-from activity_view_resources import ActivityResource
+from .activity_view_resources import ActivityResource
 
 from api.paginator import NoCountPaginator
 

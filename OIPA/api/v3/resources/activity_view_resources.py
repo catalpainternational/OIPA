@@ -1,3 +1,4 @@
+from builtins import object
 # Tastypie specific
 from tastypie import fields
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
@@ -255,7 +256,7 @@ class ActivityResource(ModelResource):
         select_fields_param = bundle.request.GET.get('select_fields', None)
         if select_fields_param:
             select_fields = comma_separated_parameter_to_list(select_fields_param)
-            for field_name, field_object in self.fields.items():
+            for field_name, field_object in list(self.fields.items()):
                 #If the field_name is in the list of requested fields dehydrate it
                 if (field_name) in select_fields:
 
@@ -293,5 +294,5 @@ class ActivityResource(ModelResource):
         select_fields_param = request.GET.get('select_fields', None)
         if select_fields_param:
             select_fields = comma_separated_parameter_to_list(select_fields_param)
-            data['meta']['selectable_fields'] = {f[0] for f in self.fields.items()} - {f for f in select_fields}
+            data['meta']['selectable_fields'] = {f[0] for f in list(self.fields.items())} - {f for f in select_fields}
         return data

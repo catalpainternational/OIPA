@@ -1,3 +1,11 @@
+from __future__ import print_function
+from __future__ import division
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+from builtins import object
+from past.utils import old_div
 
 from indicator.models import Indicator, IndicatorData
 from django.db import IntegrityError
@@ -5,10 +13,10 @@ from django.core.exceptions import ValidationError
 from geodata.models import Country, City
 import os.path
 import ujson
-import StringIO
+import io
 from decimal import Decimal
 
-class IndicatorAdminTools():
+class IndicatorAdminTools(object):
 
 
     def old_to_new_urbnnrs_country(self,indicator_id, name, data_type):
@@ -94,7 +102,7 @@ class IndicatorAdminTools():
         csv_reader = csv.DictReader(csv_fp, fieldnames=[], restkey='undefined-fieldnames', delimiter=delimiter, quotechar=quote_character)
 
         current_row = 0
-        raw_data = StringIO.StringIO()
+        raw_data = io.StringIO()
 
 
         for row in csv_reader:
@@ -116,7 +124,7 @@ class IndicatorAdminTools():
                     csv_value = Decimal(csv_value)
                     if 1 < csv_value <= 1000:
 
-                        csv_value = csv_value / 1000
+                        csv_value = old_div(csv_value, 1000)
                         row['value'] = csv_value
 
             if data_type == "n" and keep_dot == "0":
@@ -128,7 +136,7 @@ class IndicatorAdminTools():
             if data_type == "multiyear":
                 year = row['year']
                 years = year.split("-")
-                print years
+                print(years)
                 for num in range(int(years[0]), int(years[1])):
                     row['year'] = num
                     writer.writerow(row)
@@ -150,20 +158,20 @@ class IndicatorAdminTools():
         json_data = open(location)
         indicator_names = ujson.load(json_data)
 
-        for key, value in indicator_names.items():
+        for key, value in list(indicator_names.items()):
 
             try:
                 new_indicator = Indicator(id=key, friendly_label=value["name"], type_data=value["type_data"])
                 new_indicator.save()
 
-            except IntegrityError, e:
-                print e.message
+            except IntegrityError as e:
+                print(e.message)
 
-            except ValueError, e:
-                print e.message
+            except ValueError as e:
+                print(e.message)
 
-            except ValidationError, e:
-                print e.message
+            except ValidationError as e:
+                print(e.message)
 
         json_data.close()
 
@@ -191,14 +199,14 @@ class IndicatorAdminTools():
                 if Country.objects.filter(code=country_iso).exists():
                         found_country = Country.objects.get(code=country_iso)
                 else:
-                    print "indicator not found for " + str(country_iso)
+                    print("indicator not found for " + str(country_iso))
                     continue
 
                 found_indicator = None
                 if Indicator.objects.filter(id=indicator_name).exists():
                         found_indicator = Indicator.objects.get(id=indicator_name)
                 else:
-                    print "indicator not found for " + str(indicator_name)
+                    print("indicator not found for " + str(indicator_name))
                     continue
 
                 if IndicatorData.objects.filter(indicator=found_indicator, country=found_country, year=year).exists():
@@ -208,9 +216,9 @@ class IndicatorAdminTools():
                 new_indicator_data.save()
 
             except:
-                print "error in update_indicator_data"
+                print("error in update_indicator_data")
 
-        print "ready"
+        print("ready")
         json_data.close()
 
     def update_indicator_city_data(self):
@@ -251,14 +259,14 @@ class IndicatorAdminTools():
                                 found_city = City.objects.get(namepar=city_name, country_id=country_id)
 
                 if not found_city:
-                    print "city not found for " + str(city_id)
+                    print("city not found for " + str(city_id))
                     continue
 
                 found_indicator = None
                 if Indicator.objects.filter(id=indicator_id).exists():
                         found_indicator = Indicator.objects.get(id=indicator_id)
                 else:
-                    print "indicator not found for " + str(indicator_id)
+                    print("indicator not found for " + str(indicator_id))
                     continue
 
                 if IndicatorData.objects.filter(indicator=found_indicator, city=found_city, year=year).exists():
@@ -268,9 +276,9 @@ class IndicatorAdminTools():
                 new_indicator_data.save()
 
             except Exception as e:
-                print "error in update_indicator_data"
+                print("error in update_indicator_data")
 
-         print "ready"
+         print("ready")
 
          json_data.close()
          json_data2.close()

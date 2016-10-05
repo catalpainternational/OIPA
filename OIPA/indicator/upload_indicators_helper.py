@@ -1,3 +1,4 @@
+from builtins import str
 import uuid
 from geodata.models import Country, City
 from indicator.models import CsvUploadLog, IndicatorData
@@ -186,8 +187,8 @@ def save_log(
     log.uploaded_by = uploaded_by_user
     log.slug = uuid.uuid4()
     try:
-        log.cities_not_found = unicode(', '.join(cities_not_found), errors='ignore')
-        log.countries_not_found = unicode(', '.join(countries_not_found), errors='ignore')
+        log.cities_not_found = str(', '.join(cities_not_found), errors='ignore')
+        log.countries_not_found = str(', '.join(countries_not_found), errors='ignore')
     except:
         log.cities_not_found = ', '.join(cities_not_found)
         log.countries_not_found = ', '.join(countries_not_found)

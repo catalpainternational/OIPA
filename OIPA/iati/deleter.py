@@ -1,9 +1,11 @@
+from builtins import str
+from builtins import object
 __author__ = 'vincentvantwestende'
 
 import iati.models as models
 from iati_synchroniser.exception_handler import exception_handler
 
-class Deleter():
+class Deleter(object):
 
     def delete_by_source(self, xml_source_ref):
         try:
@@ -20,7 +22,7 @@ class Deleter():
              xpath_find = None
         else:
             try:
-                xpath_find = unicode(xpath_find[0], errors='ignore')
+                xpath_find = str(xpath_find[0], errors='ignore')
             except:
                 xpath_find = xpath_find[0]
 

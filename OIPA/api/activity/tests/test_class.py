@@ -1,10 +1,11 @@
+from builtins import object
 from django.test.client import Client
 from django.core.urlresolvers import reverse
 import pytest
 
 
 @pytest.mark.django_db
-class TestActivityEndpoints:
+class TestActivityEndpoints(object):
 
     def test_activities_endpoint(self):
         url = reverse('activity-list')

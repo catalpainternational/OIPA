@@ -1,3 +1,4 @@
+from builtins import str
 import xml.etree.cElementTree as etree
 from django.contrib import admin
 from django.shortcuts import get_object_or_404

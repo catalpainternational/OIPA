@@ -1,7 +1,13 @@
+from __future__ import absolute_import
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+from builtins import object
 import json
-import models
-import httplib
-import urllib2
+from . import models
+import http.client
+import urllib.request, urllib.error, urllib.parse
 import datetime
 from iati.models import OrganisationIdentifier
 from iati_synchroniser.exception_handler import exception_handler
@@ -10,7 +16,7 @@ from iati_synchroniser.exception_handler import exception_handler
 IATI_URL = 'http://www.iatiregistry.org/api/search/dataset?{options}'
 
 
-class DatasetSyncer():
+class DatasetSyncer(object):
     # TODO: Clean unnecessary exception catchers.
     def __init__(self):
         """
@@ -46,8 +52,8 @@ class DatasetSyncer():
         """
         # TODO: Clean this function
         try:
-            req = urllib2.Request(url)
-            opener = urllib2.build_opener()
+            req = urllib.request.Request(url)
+            opener = urllib.request.build_opener()
             f = opener.open(req)
             json_objects = json.load(f)
 
@@ -66,7 +72,7 @@ class DatasetSyncer():
                 else:
                     return False
 
-        except (urllib2.HTTPError, urllib2.URLError, httplib.HTTPException), e:
+        except (urllib.error.HTTPError, urllib.error.URLError, http.client.HTTPException) as e:
             exception_handler(e, "HTTP error", url)
 
             if try_number < 4:

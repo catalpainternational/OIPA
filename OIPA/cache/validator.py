@@ -1,13 +1,18 @@
+from __future__ import print_function
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import object
 from cache.models import *
-import urllib2
-import httplib
+import urllib.request, urllib.error, urllib.parse
+import http.client
 from django.conf import settings
 import json
 from contexttimer import Timer
 import datetime
 
 
-class Validator():
+class Validator(object):
 
     start_caching_from = 0.6 # seconds in query time
 
@@ -76,8 +81,8 @@ class Validator():
             fullurl += "?flush=true"
 
         try:
-            req = urllib2.Request(fullurl)
-            opener = urllib2.build_opener()
+            req = urllib.request.Request(fullurl)
+            opener = urllib.request.build_opener()
             data = opener.open(req)
             if "json" in fullurl:
                 json_objects = json.load(data)
@@ -87,14 +92,14 @@ class Validator():
                 #xml call, TO DO
                 return None
 
-        except urllib2.HTTPError, e:
-            print 'HTTP error: ' + str(e.code)
+        except urllib.error.HTTPError as e:
+            print('HTTP error: ' + str(e.code))
 
-        except urllib2.URLError, e:
-            print 'URL error: ' + str(e.reason)
+        except urllib.error.URLError as e:
+            print('URL error: ' + str(e.reason))
 
-        except httplib.HTTPException, e:
-            print 'HTTP exception' + str(e.code)
+        except http.client.HTTPException as e:
+            print('HTTP exception' + str(e.code))
 
         return None
 
@@ -110,7 +115,7 @@ class Validator():
                     entry.save()
 
             except Exception as e:
-                print e.message
+                print(e.message)
 
     def get_cached_call(self, call):
         data = CachedCall.objects.get(call=call).result
@@ -127,6 +132,6 @@ class Validator():
             return True
 
         except Exception as e:
-            print type(e)
-            print e.message
+            print(type(e))
+            print(e.message)
             return False

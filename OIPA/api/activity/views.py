@@ -1,6 +1,7 @@
+from __future__ import absolute_import
 from rest_framework import generics
 import iati
-import serializers
+from . import serializers
 
 
 class ActivityList(generics.ListAPIView):

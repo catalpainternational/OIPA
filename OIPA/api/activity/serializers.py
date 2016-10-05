@@ -1,3 +1,4 @@
+from builtins import object
 from rest_framework import serializers
 import iati
 

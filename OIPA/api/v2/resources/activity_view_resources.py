@@ -1,3 +1,4 @@
+from builtins import object
 # Django specific
 from django.db.models import Q
 

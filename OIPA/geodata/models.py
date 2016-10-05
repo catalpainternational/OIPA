@@ -1,6 +1,8 @@
 from django.contrib.gis.db import models
+from django.utils.encoding import python_2_unicode_compatible
 
 
+@python_2_unicode_compatible
 class Region(models.Model):
     code = models.SmallIntegerField(primary_key=True)
     name = models.CharField(max_length=80)
@@ -9,9 +11,11 @@ class Region(models.Model):
     center_longlat = models.PointField(null=False, blank=True)
     objects = models.GeoManager()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
+
+@python_2_unicode_compatible
 class Country(models.Model):
     code = models.CharField(primary_key=True, max_length=2)
     numerical_code_un = models.IntegerField(null=True, blank=True)
@@ -35,15 +39,11 @@ class Country(models.Model):
     class Meta:
         verbose_name_plural = "countries"
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
-    # def save(self, *args, **kwargs):
-    #     # if polygon ends up as a Polygon, make it into a MultiPolygon
-    #     if self.polygon and isinstance(self.polygon, geos.Polygon):
-    #         self.polygon = geos.MultiPolygon(self.polygon)
-    #     super(country, self).save(*args, **kwargs)
 
+@python_2_unicode_compatible
 class City(models.Model):
     geoname_id = models.IntegerField(null=True, blank=True)
     name = models.CharField(max_length=200)
@@ -54,13 +54,14 @@ class City(models.Model):
     namepar = models.CharField(max_length=200, null=True, blank=True)
     objects = models.GeoManager()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
         verbose_name_plural = "cities"
 
 
+@python_2_unicode_compatible
 class Adm1Region(models.Model):
     adm1_code = models.CharField(primary_key=True, max_length=10)
     OBJECTID_1 = models.IntegerField(null=True, blank=True)
@@ -125,13 +126,14 @@ class Adm1Region(models.Model):
     geom = models.MultiPolygonField(srid=4326)
     objects = models.GeoManager()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
         verbose_name_plural = "admin1 regions"
 
 
+@python_2_unicode_compatible
 class Adm2Region(models.Model):
 
     code = models.CharField(primary_key=True, max_length=10)
@@ -140,5 +142,5 @@ class Adm2Region(models.Model):
     geom = models.MultiPolygonField(srid=4326)
     objects = models.GeoManager()
 
-    def __unicode__(self):
+    def __str__(self):
         return "Adm2Region %s in %s" % (self.name, self.region.name)

@@ -1,3 +1,5 @@
+from __future__ import print_function
+from builtins import object
 from iati.models import Activity
 import logging
 from iati_synchroniser.models import IatiXmlSource, Publisher
@@ -7,7 +9,7 @@ from iati.filegrabber import FileGrabber
 
 logger = logging.getLogger(__name__)
 
-class ParseAdmin():
+class ParseAdmin(object):
 
     def parseAll(self):
 
@@ -34,7 +36,7 @@ class ParseAdmin():
 
 
             if ((curdate - update_interval_time) > last_updated):
-                print "Now updating " + source.source_url
+                print("Now updating " + source.source_url)
                 source.save()
 
         [parse(source) for source in IatiXmlSource.objects.all()]
@@ -49,7 +51,7 @@ class ParseAdmin():
             update_interval_time = 24 * 60 * 60 * int(days)
 
             if ((curdate - update_interval_time) > last_updated):
-                print "Now updating " + source.source_url
+                print("Now updating " + source.source_url)
                 source.save()
 
         [parse(source) for source in IatiXmlSource.objects.all()]

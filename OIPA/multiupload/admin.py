@@ -1,6 +1,9 @@
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 # -*- coding: utf-8 -*-
 try:
-    from urllib import urlencode
+    from urllib.parse import urlencode
 except ImportError:
     from urllib.parse import urlencode
 
@@ -14,7 +17,7 @@ import json
 
 
 class MultiUploadAdmin(admin.ModelAdmin):
-    class Media:
+    class Media(object):
         js = (
             'jquery/jquery.1.8.0.min.js',
             'jquery/jquery_fix_csrf.js',
@@ -151,7 +154,7 @@ class MultiUploadAdmin(admin.ModelAdmin):
         else:
             object = None
         if request.method == 'POST':    # POST data
-            if not ("f" in request.GET.keys()):  # upload file
+            if not ("f" in list(request.GET.keys())):  # upload file
                 if not request.FILES:
                     return HttpResponseBadRequest('Must upload a file')
 

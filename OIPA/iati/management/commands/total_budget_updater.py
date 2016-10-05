@@ -1,3 +1,5 @@
+from builtins import zip
+from builtins import object
 import datetime
 
 # Django specific
@@ -16,12 +18,12 @@ class Command(BaseCommand):
         parser.updateTotal()
 
 
-class TotalBudgetUpdater():
+class TotalBudgetUpdater(object):
 
     def get_fields(self, cursor):
         desc = cursor.description
         results = [
-        dict(zip([col[0] for col in desc], row))
+        dict(list(zip([col[0] for col in desc], row)))
         for row in cursor.fetchall()
         ]
         return results

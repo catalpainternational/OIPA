@@ -1,3 +1,5 @@
+from builtins import str
+from builtins import object
 # Tastypie specific
 from tastypie.resources import ModelResource
 

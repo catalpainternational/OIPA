@@ -1,3 +1,4 @@
+from builtins import str
 import os
 import csv
 from django.core.management.base import BaseCommand

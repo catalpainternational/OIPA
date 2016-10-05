@@ -1,3 +1,4 @@
+from builtins import object
 from django.db import models
 from iati.models import Transaction
 from currency_converter.converter import CurrencyConverter

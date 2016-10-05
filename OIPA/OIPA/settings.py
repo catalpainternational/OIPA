@@ -118,7 +118,6 @@ INSTALLED_APPS = (
     'cache',
     'task_queue',
     'multiupload',
-    'djsupervisor',
     'indicator_unesco',
     'translation_model',
     'rest_framework',

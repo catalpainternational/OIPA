@@ -1,3 +1,4 @@
+from builtins import object
 # Tastypie specific
 from tastypie import fields
 from tastypie.resources import ModelResource

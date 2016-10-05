@@ -1,3 +1,6 @@
+from builtins import str
+from builtins import zip
+from builtins import object
 # Tastypie specific
 from tastypie.resources import ModelResource
 
@@ -113,7 +116,7 @@ class IndicatorCountryDataResource(ModelResource):
         result_max = cursor_max.fetchone()
         desc = cursor.description
         results = [
-        dict(zip([col[0] for col in desc], row))
+        dict(list(zip([col[0] for col in desc], row)))
         for row in cursor.fetchall()
         ]
         country = {}
@@ -191,7 +194,7 @@ class IndicatorCityDataResource(ModelResource):
         result_max = cursor_max.fetchone()
         desc = cursor.description
         results = [
-        dict(zip([col[0] for col in desc], row))
+        dict(list(zip([col[0] for col in desc], row)))
         for row in cursor.fetchall()
         ]
         city = {}
@@ -348,7 +351,7 @@ class IndicatorDataResource(ModelResource):
                        'ORDER BY id.value DESC' % (filter_string))
         desc = cursor.description
         city_results = [
-        dict(zip([col[0] for col in desc], row))
+        dict(list(zip([col[0] for col in desc], row)))
         for row in cursor.fetchall()
         ]
 
@@ -373,7 +376,7 @@ class IndicatorDataResource(ModelResource):
                        'ORDER BY id.value DESC' % (filter_string))
         desc = cursor.description
         country_results = [
-        dict(zip([col[0] for col in desc], row))
+        dict(list(zip([col[0] for col in desc], row)))
         for row in cursor.fetchall()
         ]
 
@@ -385,7 +388,7 @@ class IndicatorDataResource(ModelResource):
         cursor_max.execute('SELECT indicator_id, max(value) as max_value FROM indicator_indicatordata WHERE 1 %s GROUP BY indicator_indicatordata.indicator_id order by max_value DESC' % indicator_q)
         desc = cursor_max.description
         max_results = [
-        dict(zip([col[0] for col in desc], row))
+        dict(list(zip([col[0] for col in desc], row)))
         for row in cursor_max.fetchall()
         ]
 
@@ -516,7 +519,7 @@ class IndicatorFilterOptionsResource(ModelResource):
 
             desc = cursor.description
             city_results = [
-            dict(zip([col[0] for col in desc], row))
+            dict(list(zip([col[0] for col in desc], row)))
             for row in cursor.fetchall()
             ]
 
@@ -560,7 +563,7 @@ class IndicatorFilterOptionsResource(ModelResource):
 
             desc = cursor.description
             country_results = [
-            dict(zip([col[0] for col in desc], row))
+            dict(list(zip([col[0] for col in desc], row)))
             for row in cursor.fetchall()
             ]
 
@@ -597,7 +600,7 @@ class IndicatorFilterOptionsResource(ModelResource):
 
             desc = cursor.description
             region_results = [
-            dict(zip([col[0] for col in desc], row))
+            dict(list(zip([col[0] for col in desc], row)))
             for row in cursor.fetchall()
             ]
 

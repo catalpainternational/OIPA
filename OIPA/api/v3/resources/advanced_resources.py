@@ -1,3 +1,4 @@
+from builtins import object
 
 from tastypie.resources import ModelResource
 from geodata.models import Country, Region, City

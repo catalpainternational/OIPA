@@ -1,10 +1,11 @@
+from builtins import object
 import pytest
 from django.test.client import Client
 from iati.factory import iati_factory
 
 
 @pytest.mark.django_db
-class TestEndpoints:
+class TestEndpoints(object):
 
     @pytest.fixture
     def client(self):
