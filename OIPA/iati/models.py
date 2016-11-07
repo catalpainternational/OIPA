@@ -755,7 +755,7 @@ class Description(models.Model):
     description = models.TextField(default="", max_length=40000)
     language = models.ForeignKey(Language, null=True, blank=True)
     type = models.ForeignKey(DescriptionType, related_name="description_type", null=True, blank=True)
-    rsr_description_type_id = models.IntegerField(null=True, default=None) # remove
+    rsr_description_type_id = models.IntegerField(null=True, default=None)  # remove
 
     class Meta:
         unique_together = (('activity', 'type', 'language'),)
@@ -832,34 +832,37 @@ class GeographicExactness(models.Model):
 @python_2_unicode_compatible
 class Location(models.Model):
     activity = models.ForeignKey(Activity)
-    ref = models.CharField(max_length=200, default="") # new in v1.04
+    ref = models.CharField(max_length=200, default="")  # new in v1.04
     name = models.TextField(max_length=1000, default="")
-    type = models.ForeignKey(LocationType, null=True, blank=True, related_name="deprecated_location_type") # deprecated as of v1.04
+    type = models.ForeignKey(LocationType, null=True, blank=True, related_name="deprecated_location_type")  # deprecated as of v1.04
     type_description = models.CharField(max_length=200, default="")
     description = models.TextField(default="")
     activity_description = models.TextField(default="")
     description_type = models.ForeignKey(DescriptionType, null=True, blank=True)
-    adm_country_iso = models.ForeignKey(Country, null=True, blank=True) # deprecated as of v1.04
-    adm_country_adm1 = models.CharField(max_length=100, default="") # deprecated as of v1.04
-    adm_country_adm2 = models.CharField(max_length=100, default="") # deprecated as of v1.04
-    adm_country_name = models.CharField(max_length=200, default="") # deprecated as of v1.04
-    adm_code = models.CharField(max_length=255, default="") # new in v1.04
-    adm_vocabulary = models.ForeignKey(GeographicVocabulary, null=True, blank=True, related_name="administrative_vocabulary") # new in v1.04
-    adm_level = models.IntegerField(null=True, default=None) # new in v1.04
+    adm_country_iso = models.ForeignKey(Country, null=True, blank=True)  # deprecated as of v1.04
+    adm_country_adm1 = models.CharField(max_length=100, default="")  # deprecated as of v1.04
+    adm_country_adm2 = models.CharField(max_length=100, default="")  # deprecated as of v1.04
+    adm_country_name = models.CharField(max_length=200, default="")  # deprecated as of v1.04
+    adm_code = models.CharField(max_length=255, default="")  # new in v1.04
+    adm_vocabulary = models.ForeignKey(GeographicVocabulary, null=True, blank=True, related_name="administrative_vocabulary")  # new in v1.04
+    adm_level = models.IntegerField(null=True, default=None)  # new in v1.04
     percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True, default=None)
-    latitude = models.CharField(max_length=70, default="") # deprecated as of v1.04
-    longitude = models.CharField(max_length=70, default="") # deprecated as of v1.04
+    latitude = models.CharField(max_length=70, default="")  # deprecated as of v1.04
+    longitude = models.CharField(max_length=70, default="")  # deprecated as of v1.04
     precision = models.ForeignKey(GeographicalPrecision, null=True, blank=True)
-    gazetteer_entry = models.CharField(max_length=70, default="") # deprecated as of v1.04
-    gazetteer_ref = models.ForeignKey(GazetteerAgency, null=True, blank=True) # deprecated as of v1.04
-    location_reach = models.ForeignKey(GeographicLocationReach, null=True, blank=True) # new in v1.04
-    location_id_vocabulary = models.ForeignKey(GeographicVocabulary, null=True, blank=True, related_name="location_id_vocabulary") # new in v1.04
-    location_id_code = models.CharField(max_length=255, default="") # new in v1.04
-    point_srs_name = models.CharField(max_length=255, default="") # new in v1.04
-    point_pos = models.CharField(max_length=255, default="") # new in v1.04
-    exactness = models.ForeignKey(GeographicExactness, null=True, blank=True) # new in v1.04
-    feature_designation = models.ForeignKey(LocationType, null=True, blank=True, related_name="feature_designation") #new in v1.04
-    location_class = models.ForeignKey(GeographicLocationClass, null=True, blank=True) #new in v1.04
+    gazetteer_entry = models.CharField(max_length=70, default="")  # deprecated as of v1.04
+    gazetteer_ref = models.ForeignKey(GazetteerAgency, null=True, blank=True)  # deprecated as of v1.04
+    location_reach = models.ForeignKey(GeographicLocationReach, null=True, blank=True)  # new in v1.04
+    location_id_vocabulary = models.ForeignKey(GeographicVocabulary, null=True, blank=True, related_name="location_id_vocabulary")  # new in v1.04
+    location_id_code = models.CharField(max_length=255, default="")  # new in v1.04
+    point_srs_name = models.CharField(max_length=255, default="")  # new in v1.04
+    point_pos = models.CharField(max_length=255, default="")  # new in v1.04
+    exactness = models.ForeignKey(GeographicExactness, null=True, blank=True)  # new in v1.04
+    feature_designation = models.ForeignKey(LocationType, null=True, blank=True, related_name="feature_designation")  # new in v1.04
+    location_class = models.ForeignKey(GeographicLocationClass, null=True, blank=True)  # new in v1.04
+
+    class Meta:
+        ordering = ('id',)
 
     def __str__(self,):
         return "%s - %s" % (self.activity, self.name)
