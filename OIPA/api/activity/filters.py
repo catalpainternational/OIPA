@@ -1,16 +1,18 @@
 from django.db.models.fields import FieldDoesNotExist
 from django.db.models.fields.related import ForeignObjectRel
 from django.db.models.fields.related import OneToOneRel
-from django.db.models import Q
-from django.conf import settings
 
-from django_filters import FilterSet, NumberFilter, DateFilter, DateTimeFilter, BooleanFilter
+from django_filters import FilterSet
+from django_filters import NumberFilter
+from django_filters import DateFilter
+from django_filters import BooleanFilter
+from django_filters import TypedChoiceFilter
+
+from distutils.util import strtobool
 
 from api.generics.filters import CommaSeparatedCharFilter
-from api.generics.filters import CommaSeparatedCharMultipleFilter
 from api.generics.filters import TogetherFilterSet
 from api.generics.filters import ToManyFilter
-from api.generics.filters import NestedFilter
 
 from rest_framework import filters
 
@@ -28,9 +30,12 @@ class ActivityFilter(TogetherFilterSet):
         name='scope__code',
         lookup_type='in',)
 
-    document_link_category = CommaSeparatedCharFilter(
+    document_link_category = ToManyFilter(
+        qs=DocumentLink,
         lookup_type='in',
-        name='documentlink__categories')
+        name='categories',
+        fk='activity',
+    )
 
     planned_start_date_lte = DateFilter(
         lookup_type='lte',
@@ -131,6 +136,18 @@ class ActivityFilter(TogetherFilterSet):
         lookup_type='lte',
         name='budget__period_end')
 
+
+    humanitarian = TypedChoiceFilter(
+        choices=(('0', 'False'), ('1', 'True')),
+        coerce=strtobool)
+
+    humanitarian_scope_type = ToManyFilter(
+        qs=HumanitarianScope,
+        lookup_type='in',
+        name='type__code',
+        fk='activity',
+    )
+
     related_activity_id = ToManyFilter(
         qs=RelatedActivity,
         fk='current_activity',
@@ -142,6 +159,13 @@ class ActivityFilter(TogetherFilterSet):
         qs=RelatedActivity,
         lookup_type='in',
         name='type__code',
+        fk='current_activity',
+    )
+
+    related_activity_transaction_receiver_organisation_name = ToManyFilter(
+        qs=RelatedActivity,
+        lookup_type='in',
+        name='ref_activity__transaction__receiver_organisation__narratives__content',
         fk='current_activity',
     )
 
@@ -193,6 +217,7 @@ class ActivityFilter(TogetherFilterSet):
         name='region__code',
         fk='activity',
     )
+    
     sector = ToManyFilter(
         qs=ActivitySector,
         lookup_type='in',
@@ -204,6 +229,13 @@ class ActivityFilter(TogetherFilterSet):
         qs=ActivitySector,
         lookup_type='in',
         name='sector__category__code',
+        fk='activity',
+    )
+
+    policy_marker = ToManyFilter(
+        qs=ActivityPolicyMarker,
+        lookup_type='in',
+        name='code',
         fk='activity',
     )
 
@@ -238,16 +270,35 @@ class ActivityFilter(TogetherFilterSet):
     reporting_organisation = ToManyFilter(
         qs=ActivityReportingOrganisation,
         lookup_type='in',
-        name='organisation__organisation_identifier',
+        name='normalized_ref',
         fk='activity',
     )
 
     reporting_organisation_startswith = ToManyFilter(
         qs=ActivityReportingOrganisation,
         lookup_type='startswith',
-        name='organisation__organisation_identifier',
+        name='normalized_ref',
         fk='activity',
     )
+
+    result_title = ToManyFilter(
+        qs=Result,
+        lookup_type='in',
+        name='resulttitle__narratives__content',
+        fk='activity',
+    )
+
+    indicator_title = ToManyFilter(
+        qs=ResultIndicatorTitle,
+        lookup_type='in',
+        name='primary_name',
+        fk='result_indicator__result__activity')
+
+    indicator_period_end_year = ToManyFilter(
+        qs=ResultIndicatorPeriod,
+        lookup_type='year',
+        name='period_end',
+        fk='result_indicator__result__activity')
 
     #
     # Transaction filters
@@ -274,6 +325,20 @@ class ActivityFilter(TogetherFilterSet):
         fk='activity',
     )
 
+    transaction_provider_organisation = ToManyFilter(
+        qs=Transaction,
+        lookup_type='in',
+        name='provider_organisation__ref',
+        fk='activity',
+    )
+
+    transaction_receiver_organisation = ToManyFilter(
+        qs=Transaction,
+        lookup_type='in',
+        name='receiver_organisation__ref',
+        fk='activity',
+    )
+
     transaction_provider_organisation_name = ToManyFilter(
         qs=Transaction,
         lookup_type='in',
@@ -292,6 +357,20 @@ class ActivityFilter(TogetherFilterSet):
         qs=Transaction,
         lookup_type='in',
         name='provider_organisation__provider_activity_ref',
+        fk='activity',
+    )
+
+    transaction_receiver_activity = ToManyFilter(
+        qs=Transaction,
+        lookup_type='in',
+        name='receiver_organisation__receiver_activity_ref',
+        fk='activity',
+    )
+
+    transaction_provider_activity_reporting_org = ToManyFilter(
+        qs=Transaction,
+        lookup_type='in',
+        name='provider_organisation__provider_activity__reporting_organisations__ref',
         fk='activity',
     )
 
@@ -446,7 +525,7 @@ class RelatedOrderingFilter(filters.OrderingFilter):
         """
         components = field.split('__', 1)
         try:
-            field, parent_model, direct, m2m = model._meta.get_field_by_name(components[0])
+            field = model._meta.get_field(components[0])
 
             if isinstance(field, OneToOneRel):
                 return self.is_valid_field(field.related_model, components[1])
@@ -466,8 +545,10 @@ class RelatedOrderingFilter(filters.OrderingFilter):
 
         mapped_fields = {
             'title': 'title__narratives__content',
+            'recipient_country': 'recipient_country__name',
             'activity_budget_value': 'activity_aggregation__budget_value',
             'activity_incoming_funds_value': 'activity_aggregation__incoming_funds_value',
+            'activity_commitment_value': 'activity_aggregation__commitment_value',
             'activity_disbursement_value': 'activity_aggregation__disbursement_value',
             'activity_expenditure_value': 'activity_aggregation__expenditure_value',
             'activity_plus_child_budget_value': 'activity_plus_child_aggregation__budget_value',
@@ -478,6 +559,7 @@ class RelatedOrderingFilter(filters.OrderingFilter):
             'start_date': 'start_date',
             'end_date': 'end_date',
 	    'last_updated_datetime': 'last_updated_datetime',
+            'xml_source_ref': 'xml_source_ref'
         }
 
         for i, term in enumerate(ordering):

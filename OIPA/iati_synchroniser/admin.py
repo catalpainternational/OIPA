@@ -51,7 +51,7 @@ def export_xml_by_source(request, source):
         else:
             return xml
 
-    xml = E('iati-activities', version="2.01")
+    xml = E('iati-activities', version="2.02")
 
     final_xml = get_result(xml, 1)
     final_xml.attrib['generated-datetime'] = datetime.datetime.now().isoformat()
@@ -84,12 +84,13 @@ class IATIXMLSourceAdmin(admin.ModelAdmin):
         'get_parse_activity',
         'date_updated',
         'last_found_in_registry',
-        'is_parsed']
+        'is_parsed',
+        'time_to_parse']
 
     def show_source_url(self, obj):
         return format_html('<a target="_blank" href="{url}">Open file in new window</a>', url=obj.source_url)
     show_source_url.allow_tags = True
-    show_source_url.short_description = "Source URL"
+    show_source_url.short_description = "URL"
 
     def export_btn(self, obj):
         return format_html(
@@ -120,9 +121,14 @@ class IATIXMLSourceAdmin(admin.ModelAdmin):
 
     def parse_source(self, request):
         xml_id = request.GET.get('xml_id')
+        force = request.GET.get('force', '')
+        if force == '0':
+            force = False
+        else:
+            force = True
         obj = get_object_or_404(IatiXmlSource, id=xml_id)
-        obj.process(force_reparse=True)
-        return HttpResponse('Success')
+        obj.process(force_reparse=force)
+        return HttpResponse('<html><body>Success</body></html>', content_type='text/html')
 
     def add_to_parse_queue(self, request):
         xml_id = request.GET.get('xml_id')
@@ -133,7 +139,6 @@ class IATIXMLSourceAdmin(admin.ModelAdmin):
 
     def parse_activity_view(self, request, activity_id):
         xml_id = request.GET.get('xml_id')
-
         obj = get_object_or_404(IatiXmlSource, id=xml_id)
         obj.process_activity(activity_id)
         return HttpResponse('Success')

@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
         ('iati_codelists', '0003_auto_20160204_1305'),
         ('contenttypes', '0002_remove_content_type_name'),
         ('iati_organisation', '0002_remove_organisations'),
+        ('iati', '0001_initial'),
     ]
 
     operations = [

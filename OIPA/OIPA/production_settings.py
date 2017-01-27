@@ -36,21 +36,10 @@ STATICFILES_DIRS = (
      os.path.join(BASE_DIR, 'static/'),
 )
 
-RQ_QUEUES = {
-    'default': {
-        'HOST': 'localhost',
-        'PORT': 6379,
-        'DB': 0,
-    },
-    'parser': {
-        'HOST': 'localhost',
-        'PORT': 6379,
-        'DB': 0,
-    }
-}
-
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'OIPA.wsgi.application'
+
+ERROR_LOGS_ENABLED = False
 
 try:
     from local_settings import *

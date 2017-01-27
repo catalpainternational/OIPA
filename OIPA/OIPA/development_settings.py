@@ -4,10 +4,18 @@ from OIPA.base_settings import *
 
 DEBUG = True
 
-SECRET_KEY = '__DEV_SECRET_KEY__'
+MIDDLEWARE_CLASSES += [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+]
+
+INSTALLED_APPS += {
+    'debug_toolbar',
+}
 
 def custom_show_toolbar(self):
     return True
+
+SECRET_KEY = '__DEV_SECRET_KEY__'
 
 DEBUG_TOOLBAR_CONFIG = {
     'SHOW_TOOLBAR_CALLBACK': custom_show_toolbar,
@@ -21,25 +29,6 @@ DATABASES = {
         'PASSWORD': 'oipa',
         'HOST': '127.0.0.1',
     },
-}
-
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
-    },
-}
-
-RQ_QUEUES = {
-    'default': {
-        'HOST': 'localhost',
-        'PORT': 6379,
-        'DB': 0,
-    },
-    'parser': {
-        'HOST': 'localhost',
-        'PORT': 6379,
-        'DB': 0,
-    }
 }
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")

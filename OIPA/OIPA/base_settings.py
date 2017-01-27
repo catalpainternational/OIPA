@@ -1,14 +1,13 @@
 # Django settings for OIPA project.
 import sys
 import os
-from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
 from django.core.urlresolvers import reverse_lazy
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
 LOGIN_URL = reverse_lazy('two_factor:login')
-
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+LOGOUT_URL = '/logout'
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 3000
 
 TEMPLATES = [
     {
@@ -109,7 +108,7 @@ MIDDLEWARE_CLASSES = [
 
 ROOT_URLCONF = 'OIPA.urls'
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django_rq',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -128,11 +127,9 @@ INSTALLED_APPS = (
     'iati_organisation.apps.IatiOrganisationConfig',
     'iati_synchroniser.apps.IatiSynchroniserConfig',
     'geodata.apps.GeodataConfig',
-    'indicator',
     'currency_convert.apps.CurrencyConvertConfig',
     'api',
     'task_queue',
-    'multiupload',
     'djsupervisor',
     'rest_framework',
     'rest_framework_csv',
@@ -148,7 +145,7 @@ INSTALLED_APPS = (
     'nested_admin',
     'djorm_pgfulltext',
     'admin_reorder',
-)
+]
 
 ADMIN_REORDER = (
     'iati',
@@ -158,7 +155,6 @@ ADMIN_REORDER = (
     'iati_organisation',
     'geodata',
     'currency_convert',
-    'indicator',
     'auth',
 )
 
@@ -183,6 +179,21 @@ REST_FRAMEWORK = {
     ),
 }
 
+RQ_QUEUES = {
+    'default': {
+        'HOST': 'localhost',
+        'PORT': 6379,
+        'DB': 0,
+        'DEFAULT_TIMEOUT': 3600,
+    },
+    'parser': {
+        'HOST': 'localhost',
+        'PORT': 6379,
+        'DB': 0,
+        'DEFAULT_TIMEOUT': 5400,
+    }
+}
+
 GRAPPELLI_ADMIN_TITLE = 'OIPA admin'
 ADMINFILES_UPLOAD_TO = 'csv_files'
 LOGIN_REDIRECT_URL = '/admin/'
@@ -192,4 +203,9 @@ CORS_URLS_REGEX = r'^/api/.*$'
 CORS_ALLOW_METHODS = ('GET',)
 
 IATI_PARSER_DISABLED = False
+CONVERT_CURRENCIES = True
 ROOT_ORGANISATIONS = []
+
+ERROR_LOGS_ENABLED = True
+
+DEFAULT_LANG = None

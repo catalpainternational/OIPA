@@ -1,19 +1,19 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponse
-
 import json
-import redis
-from datetime import datetime
-
 import django_rq
 from django_rq import get_connection
-from rq import use_connection
 from rq import requeue_job
 from rq import get_failed_queue
-from rq import Worker, push_connection
+from rq import Worker
 from rq_scheduler import Scheduler
-
+from rq.registry import FinishedJobRegistry
 from task_queue import tasks
+from redis import Redis
+from rq.exceptions import NoSuchJobError
+from rq.job import Job
+
+from math import ceil
 
 
 # PARSE TASKS
@@ -23,34 +23,20 @@ def add_task(request):
     parameters = request.GET.get('parameters')
     queue_to_be_added_to = request.GET.get('queue')
     queue = django_rq.get_queue(queue_to_be_added_to)
-
+    func = getattr(tasks, task)
+    
     if parameters:
-        queue.enqueue(getattr(tasks, task), args=(parameters,), timeout=7200)
+        queue.enqueue(func, args=(parameters,))
     else:
-        queue.enqueue(getattr(tasks, task), timeout=7200)
-    return HttpResponse('Success')
+        queue.enqueue(func)
+    return HttpResponse(json.dumps(True), content_type='application/json')
 
 
 # TASK QUEUE MANAGEMENT
 @staff_member_required
-def start_worker_with_supervisor(request):
-    from django.core.management import call_command
-
-    action = request.GET.get('action')
-    worker_program = request.GET.get('worker_program')
-
-    list = [action, worker_program]
-    call_command('supervisor', *list)
-
-    return HttpResponse('Success')
-
-
-@staff_member_required
 def get_workers(request):
 
-    connection = redis.Redis()
-    push_connection(connection)
-    workers = Worker.all(connection=connection)
+    workers = Worker.all(connection=tasks.redis_conn)
 
     workerdata = list()
     # serialize workers
@@ -94,52 +80,40 @@ def delete_all_tasks_from_queue(request):
 @staff_member_required
 def get_current_job(request):
     from rq import get_current_job
-    from rq import use_connection
-    from redis import Redis
     from rq import Queue
-    use_connection()
-    redis_conn = Redis()
-    q = Queue(connection=redis_conn)
+
+    q = Queue(connection=tasks.redis_conn)
     job = get_current_job(q)
     import json
     data = json.dumps(job)
     return HttpResponse(data, content_type='application/json')
 
 
-# Schedule management
-@staff_member_required
-def start_scheduler(request):
-    from rq_scheduler.scripts import rqscheduler
-    rqscheduler.main()
-    return HttpResponse('Success')
-
 
 @staff_member_required
 def add_scheduled_task(request):
+    from rq_scheduler import Scheduler
+    from datetime import datetime
 
     task = request.GET.get('task')
     period = request.GET.get('period')
     queue = request.GET.get('queue')
     parameters = request.GET.get('parameters')
-
-    # Use RQ's default Redis connection
-    use_connection()
-    # Get a scheduler for the "default" queue
-    scheduler = Scheduler(queue)
+    scheduler = Scheduler(queue_name=queue, connection=tasks.redis_conn)
 
     if parameters:
         scheduler.schedule(
-            scheduled_time=datetime.now(),   # Time for first execution
+            scheduled_time=datetime.utcnow(),   # Time for first execution
             func=getattr(tasks, task),       # Function to be queued
             args=[int(parameters)],
-            interval=period,                 # Time before the function is called again, in seconds
+            interval=int(period),                 # Time before the function is called again, in seconds
             repeat=None                      # Repeat this number of times (None means repeat forever)
         )
     else:
         scheduler.schedule(
-            scheduled_time=datetime.now(),   # Time for first execution
+            scheduled_time=datetime.utcnow(),   # Time for first execution
             func=getattr(tasks, task),       # Function to be queued
-            interval=period,                 # Time before the function is called again, in seconds
+            interval=int(period),                 # Time before the function is called again, in seconds
             repeat=None                      # Repeat this number of times (None means repeat forever)
         )
     return HttpResponse('Success')
@@ -155,7 +129,7 @@ def get_queue(request):
     count_jobs = 0
     for job in queue.jobs:
         count_jobs += 1
-        if count_jobs == 20:
+        if count_jobs == 6:
             break
 
         job_dict = {
@@ -175,9 +149,9 @@ def get_queue(request):
 def get_scheduled_tasks(request):
 
     # Use RQ's default Redis connection
-    use_connection()
+    # use_connection()
     # Get a scheduler for the "default" queue
-    scheduler = Scheduler()
+    scheduler = Scheduler(connection=tasks.redis_conn)
     list_of_job_instances = scheduler.get_jobs()
 
     jobdata = list()
@@ -196,32 +170,22 @@ def get_scheduled_tasks(request):
 
         jobdata.append(job_dict)
 
-    # scheduler = Scheduler('parser') # Get a scheduler for the "parser" queue
-    # list_of_job_instances = scheduler.get_jobs()
-    #
-    # for job in list_of_job_instances:
-    #     if "interval" in job.meta:
-    #         interval = job.meta["interval"]
-    #     else:
-    #         interval = 0
-    #     job_dict = { 'job_id': job._id, 'task': job.description, 'period': interval, 'queue': "parser" }
-    #     jobdata.append(job_dict)
-
     data = json.dumps(jobdata)
     return HttpResponse(data, content_type='application/json')
 
 
 @staff_member_required
 def cancel_scheduled_task(request):
-    job_id = request.GET.get('job_id')
-    from rq_scheduler import Scheduler
 
-    scheduler = Scheduler('parser')
+    from rq_scheduler import Scheduler
+    job_id = request.GET.get('job_id')
+
+    scheduler = Scheduler('default', connection=tasks.redis_conn)
     scheduler.cancel(job_id)
     return HttpResponse('Success')
 
 
-# Failed tasks
+@staff_member_required
 def get_failed_tasks(request):
 
     queue = django_rq.get_failed_queue()
@@ -231,10 +195,49 @@ def get_failed_tasks(request):
 
         job_dict = {
             'job_id': job.id,
-            'func_name': job.func_name,
+            'func_name': job.description,
             'error_message': job.exc_info,
             'ended_at': job.ended_at.strftime("%a, %d %b %Y %H:%M:%S +0000"),
-            'enqueued_at': job.enqueued_at.strftime("%a, %d %b %Y %H:%M:%S +0000")}
+            'enqueued_at': job.enqueued_at.strftime("%a, %d %b %Y %H:%M:%S +0000"),
+            'args': job.args
+        }
+
+        jobdata.append(job_dict)
+
+    data = json.dumps(jobdata)
+    return HttpResponse(data, content_type='application/json')
+
+
+@staff_member_required
+def get_finished_tasks(request):
+
+    current_queue = request.GET.get('queue')
+    queue = django_rq.get_queue(current_queue)
+    registry = FinishedJobRegistry(queue.name, queue.connection)
+
+    items_per_page = 10
+    num_jobs = len(registry)
+    jobs = []
+
+    if num_jobs > 0:
+        offset = 0
+        job_ids = registry.get_job_ids(offset, items_per_page)
+
+        for job_id in job_ids:
+            try:
+                jobs.append(Job.fetch(job_id, connection=queue.connection))
+            except NoSuchJobError:
+                pass
+
+    jobdata = list()
+    for job in jobs:
+
+        job_dict = {
+            'job_id': job.id,
+            'func_name': job.func_name,
+            'ended_at': job.ended_at.strftime("%a, %d %b %Y %H:%M:%S +0000"),
+            'enqueued_at': job.enqueued_at.strftime("%a, %d %b %Y %H:%M:%S +0000"),
+            'args': job.args}
 
         jobdata.append(job_dict)
 

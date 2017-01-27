@@ -16,7 +16,7 @@ from iati_codelists.models import TiedStatus
 from iati_codelists.models import Currency
 from iati_codelists.models import Sector
 from iati_codelists.models import TransactionType
-from iati_organisation.models import Organisation
+from iati_organisation.models import Organisation, OrganisationType
 from iati.models import Activity
 from iati.models import Narrative
 
@@ -26,14 +26,15 @@ class Transaction(models.Model):
 
     ref = models.CharField(max_length=255, null=True, blank=True, default="")
 
-    transaction_type = models.ForeignKey(
-        TransactionType)
+    transaction_type = models.ForeignKey(TransactionType)
     transaction_date = models.DateField(db_index=True)
 
     value = models.DecimalField(max_digits=15, decimal_places=2)
     value_string = models.CharField(max_length=50)
     currency = models.ForeignKey(Currency)
     value_date = models.DateField()
+
+    humanitarian = models.NullBooleanField(null=True, blank=True)
 
     xdr_value = models.DecimalField(max_digits=20, decimal_places=7, default=Decimal(0))
     usd_value = models.DecimalField(max_digits=20, decimal_places=7, default=Decimal(0))
@@ -46,8 +47,7 @@ class Transaction(models.Model):
         DisbursementChannel,
         null=True,
         blank=True,
-        default=None
-    )
+        default=None)
 
     flow_type = models.ForeignKey(FlowType, null=True, blank=True, default=None)
     finance_type = models.ForeignKey(FinanceType, null=True, blank=True, default=None)
@@ -74,6 +74,13 @@ class TransactionProvider(models.Model):
         null=True,
         blank=True,
         default=None)
+
+    type = models.ForeignKey(
+        OrganisationType, 
+        null=True, 
+        default=None, 
+        blank=True)
+
     provider_activity = models.ForeignKey(
         Activity,
         related_name="transaction_provider_activity",
@@ -81,6 +88,7 @@ class TransactionProvider(models.Model):
         null=True,
         blank=True,
         default=None)
+
     provider_activity_ref = models.CharField(
         db_index=True,
         max_length=200,
@@ -122,6 +130,13 @@ class TransactionReceiver(models.Model):
         null=True,
         blank=True,
         default=None)
+
+    type = models.ForeignKey(
+        OrganisationType, 
+        null=True, 
+        default=None, 
+        blank=True)
+
     receiver_activity = models.ForeignKey(
         Activity,
         related_name="transaction_receiver_activity",
@@ -129,6 +144,7 @@ class TransactionReceiver(models.Model):
         null=True,
         blank=True,
         default=None)
+
     receiver_activity_ref = models.CharField(
         db_index=True,
         max_length=200,
@@ -185,6 +201,8 @@ class TransactionSector(models.Model):
         blank=True,
         default=None,
         on_delete=models.CASCADE)
+    
+    vocabulary_uri = models.URLField(null=True, blank=True)
 
     reported_on_transaction = models.BooleanField(default=True)
 
@@ -200,6 +218,7 @@ class TransactionRecipientCountry(models.Model):
     transaction = models.ForeignKey(
         Transaction,
         on_delete=models.CASCADE)
+    
     country = models.ForeignKey(
         Country,
         on_delete=models.CASCADE)
@@ -218,6 +237,7 @@ class TransactionRecipientRegion(models.Model):
     transaction = models.ForeignKey(
         Transaction,
         on_delete=models.CASCADE)
+
     region = models.ForeignKey(
         Region,
         on_delete=models.CASCADE)
@@ -228,6 +248,8 @@ class TransactionRecipientRegion(models.Model):
         blank=True, 
         default=1,
         on_delete=models.CASCADE)
+
+    vocabulary_uri = models.URLField(null=True, blank=True)
 
     reported_on_transaction = models.BooleanField(default=True)
 

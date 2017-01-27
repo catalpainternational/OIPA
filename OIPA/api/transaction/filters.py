@@ -53,6 +53,13 @@ class TransactionFilter(FilterSet):
         fk='transaction',
     )
 
+    provider_activity_reporting_org = ToManyFilter(
+        qs=TransactionProvider,
+        lookup_type='in',
+        name='provider_activity__reporting_organisations__ref',
+        fk='transaction',
+    )
+
     provider_organisation_primary_name = ToManyFilter(
         qs=TransactionProvider,
         lookup_type='in',
@@ -346,6 +353,14 @@ class TransactionFilter(FilterSet):
         fk='activity',
     )
 
+    result_title = ToManyFilter(
+        main_fk='activity',
+        qs=Result,
+        lookup_type='in',
+        name='resulttitle__narratives__content',
+        fk='activity',
+    )
+
     # TODO: degrades performance very badly, should probably remove this - 2016-03-02
     reporting_organisation_startswith = ToManyFilter(
         main_fk='activity',
@@ -354,6 +369,89 @@ class TransactionFilter(FilterSet):
         name='normalized_ref',
         fk='activity',
     )
+
+    # activity aggregation filters
+
+    total_budget_lte = NumberFilter(
+        lookup_type='lte',
+        name='activity__activity_aggregation__budget_value')
+
+    total_budget_gte = NumberFilter(
+        lookup_type='gte',
+        name='activity__activity_aggregation__budget_value')
+
+    total_disbursement_lte = NumberFilter(
+        lookup_type='lte',
+        name='activity__activity_aggregation__disbursement_value')
+
+    total_disbursement_gte = NumberFilter(
+        lookup_type='gte',
+        name='activity__activity_aggregation__disbursement_value')
+
+    total_incoming_funds_lte = NumberFilter(
+        lookup_type='lte',
+        name='activity__activity_aggregation__incoming_funds_value')
+
+    total_incoming_funds_gte = NumberFilter(
+        lookup_type='gte',
+        name='activity__activity_aggregation__incoming_funds_value')
+
+    total_expenditure_lte = NumberFilter(
+        lookup_type='lte',
+        name='activity__activity_aggregation__expenditure_value')
+
+    total_expenditure_gte = NumberFilter(
+        lookup_type='gte',
+        name='activity__activity_aggregation__expenditure_value')
+
+    total_commitment_lte = NumberFilter(
+        lookup_type='lte',
+        name='activity__activity_aggregation__commitment_value')
+
+    total_commitment_gte = NumberFilter(
+        lookup_type='gte',
+        name='activity__activity_aggregation__commitment_value')
+
+    total_hierarchy_budget_lte = NumberFilter(
+        lookup_type='lte',
+        name='activity__activity_plus_child_aggregation__budget_value')
+
+    total_hierarchy_budget_gte = NumberFilter(
+        lookup_type='gte',
+        name='activity__activity_plus_child_aggregation__budget_value')
+
+    total_hierarchy_disbursement_lte = NumberFilter(
+        lookup_type='lte',
+        name='activity__activity_plus_child_aggregation__disbursement_value')
+
+    total_hierarchy_disbursement_gte = NumberFilter(
+        lookup_type='gte',
+        name='activity__activity_plus_child_aggregation__disbursement_value')
+
+    total_hierarchy_incoming_funds_lte = NumberFilter(
+        lookup_type='lte',
+        name='activity__activity_plus_child_aggregation__incoming_funds_value')
+
+    total_hierarchy_incoming_funds_gte = NumberFilter(
+        lookup_type='gte',
+        name='activity__activity_plus_child_aggregation__incoming_funds_value')
+
+    total_hierarchy_expenditure_lte = NumberFilter(
+        lookup_type='lte',
+        name='activity__activity_plus_child_aggregation__expenditure_value')
+
+    total_hierarchy_expenditure_gte = NumberFilter(
+        lookup_type='gte',
+        name='activity__activity_plus_child_aggregation__expenditure_value')
+
+    total_hierarchy_commitment_lte = NumberFilter(
+        lookup_type='lte',
+        name='activity__activity_plus_child_aggregation__commitment_value')
+
+    total_hierarchy_commitment_gte = NumberFilter(
+        lookup_type='gte',
+        name='activity__activity_plus_child_aggregation__commitment_value')
+
 
     class Meta:
         model = Transaction
@@ -401,3 +499,14 @@ class TransactionAggregationFilter(TransactionFilter):
         name='transactionsector__sector__code',
         lookup_type='in',
     )
+
+    policy_marker = CommaSeparatedStickyCharFilter(
+        name='activity__activitypolicymarker__code',
+        lookup_type='in',
+    )
+
+    policy_marker_significance = CommaSeparatedStickyCharFilter(
+        name='activity__activitypolicymarker__significance',
+        lookup_type='in',
+    )
+

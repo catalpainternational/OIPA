@@ -4,6 +4,7 @@
 [![Coverage Status](https://coveralls.io/repos/zimmerman-zimmerman/OIPA/badge.svg?branch=develop&service=github)](https://coveralls.io/github/zimmerman-zimmerman/OIPA?branch=develop)
 [![Requirements Status](https://requires.io/github/zimmerman-zimmerman/OIPA/requirements.svg?branch=develop)](https://requires.io/github/zimmerman-zimmerman/OIPA/requirements/?branch=develop)
 [![Documentation Status](https://readthedocs.org/projects/oipa-docs/badge/?version=latest)](http://docs.oipa.nl/en/latest/?badge=latest)
+[![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg?maxAge=2592000)](https://gitter.im/zimmerman-zimmerman/OIPA)
 
 
 OIPA extracts all published IATI XML files from the [IATI Registry](http://www.iatiregistry.org/publisher) and makes them available in a normalised PostgreSQL database, that you can access using a RESTful API.
@@ -24,8 +25,8 @@ Documentation on installing, running and using OIPA can be found at <a href="htt
 2. Run ```vagrant up```
 3. Find your way into the machine: ```vagrant ssh```
 4. Start the server: ```./manage.py runserver 0.0.0.0:8000```
+4. Start the process control centre (supervisor): ```./manage.py supervisor```
 5. Open your browser at <a href="http://localhost:8000" target="_blank">localhost:8000</a>
-
 
 For more detailed information, see the [install documentation](http://docs.oipa.nl/en/latest/installing/)
 

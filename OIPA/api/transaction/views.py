@@ -23,12 +23,16 @@ from iati.models import ActivityParticipatingOrganisation
 from iati.models import OrganisationType
 from iati.models import Organisation
 from iati.models import ActivityReportingOrganisation
+from iati.models import PolicySignificance
 
 from api.activity.serializers import CodelistSerializer
 from api.country.serializers import CountrySerializer
 from api.region.serializers import RegionSerializer
 from api.sector.serializers import SectorSerializer
 from api.organisation.serializers import OrganisationSerializer
+
+from api.pagination import CustomTransactionPagination
+
 
 class TransactionList(DynamicListView):
     """
@@ -63,6 +67,7 @@ class TransactionList(DynamicListView):
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
     filter_class = TransactionFilter
+    pagination_class = CustomTransactionPagination
 
     fields = (
         'url',
@@ -188,18 +193,21 @@ class TransactionAggregation(AggregationView):
     - `recipient_region`
     - `sector`
     - `related_activity`
+    - `transaction_type`
     - `reporting_organisation`
     - `participating_organisation`
+    - `receiver_org`
+    - `provider_org`
     - `document_link_category`
     - `activity_status`
     - `participating_organisation_type`
-    - `policy_marker`
     - `collaboration_type`
     - `default_flow_type`
     - `default_finance_type`
     - `default_aid_type`
     - `default_tied_status`
-    - `transactions_per_quarter`
+    - `transaction_date_month`
+    - `transaction_date_quarter`
     - `transaction_date_year`
 
     ## Aggregation options
@@ -296,6 +304,8 @@ class TransactionAggregation(AggregationView):
             queryset=Country.objects.all(),
             serializer=CountrySerializer,
             serializer_fields=('url', 'code', 'name', 'location'),
+            name_search_field='transactionrecipientcountry__country__name',
+            renamed_name_search_field='recipient_country_name',
         ),
         GroupBy(
             query_param="recipient_region",
@@ -304,6 +314,8 @@ class TransactionAggregation(AggregationView):
             queryset=Region.objects.all(),
             serializer=RegionSerializer,
             serializer_fields=('url', 'code', 'name', 'location'),
+            name_search_field="transactionrecipientregion__region__name",
+            renamed_name_search_field="recipient_region_name",
         ),
         GroupBy(
             query_param="sector",
@@ -312,6 +324,8 @@ class TransactionAggregation(AggregationView):
             queryset=Sector.objects.all(),
             serializer=SectorSerializer,
             serializer_fields=('url', 'code', 'name', 'location'),
+            name_search_field="sector__name",
+            renamed_name_search_field="sector_name",
         ),
         GroupBy(
             query_param="related_activity",
@@ -330,24 +344,31 @@ class TransactionAggregation(AggregationView):
             renamed_fields="reporting_organisation",
             queryset=Organisation.objects.all(),
             serializer=OrganisationSerializer,
-            serializer_main_field='organisation_identifier'
+            serializer_main_field='organisation_identifier',
+            name_search_field="activity__reporting_organisations__organisation__primary_name",
+            renamed_name_search_field="reporting_organisation_name"
         ),
         GroupBy(
             query_param="participating_organisation",
-            fields="activity__participating_organisations__normalized_ref",
-            renamed_fields="participating_organisation",
+            fields=("activity__participating_organisations__primary_name", "activity__participating_organisations__normalized_ref"),
+            renamed_fields=("participating_organisation", "participating_organisation_ref"),
             queryset=ActivityParticipatingOrganisation.objects.all(),
-            # serializer=OrganisationSerializer,
+            name_search_field="activity__participating_organisations__primary_name",
+            renamed_name_search_field="participating_organisation_name"
         ),
         GroupBy(
             query_param="provider_org",
             fields=("provider_organisation__primary_name"),
             renamed_fields="provider_org",
+            name_search_field="provider_organisation__primary_name",
+            renamed_name_search_field="provider_org_name"
         ),
         GroupBy(
             query_param="receiver_org",
             fields=("receiver_organisation__primary_name"),
             renamed_fields="receiver_org",
+            name_search_field="receiver_organisation__primary_name",
+            renamed_name_search_field="receiver_org_name"
         ),
         GroupBy(
             query_param="document_link_category",
@@ -355,6 +376,8 @@ class TransactionAggregation(AggregationView):
             renamed_fields="document_link_category",
             queryset=DocumentCategory.objects.all(),
             serializer=CodelistSerializer,
+            name_search_field="activity__documentlink__categories__name",
+            renamed_name_search_field="document_link_category_name"
         ),
         GroupBy(
             query_param="activity_status",
@@ -362,6 +385,8 @@ class TransactionAggregation(AggregationView):
             renamed_fields="activity_status",
             queryset=ActivityStatus.objects.all(),
             serializer=CodelistSerializer,
+            name_search_field="activity__activity_status__name",
+            renamed_name_search_field="activity_status_name"
         ),
         GroupBy(
             query_param="participating_organisation_type",
@@ -369,13 +394,8 @@ class TransactionAggregation(AggregationView):
             renamed_fields="participating_organisation_type",
             queryset=OrganisationType.objects.all(),
             serializer=CodelistSerializer,
-        ),
-        GroupBy(
-            query_param="policy_marker",
-            fields="activity__policy_marker",
-            renamed_fields="policy_marker",
-            queryset=PolicyMarker.objects.all(),
-            serializer=CodelistSerializer,
+            name_search_field="activity__participating_organisations__type__name",
+            renamed_name_search_field="participating_organisations_type_name"
         ),
         GroupBy(
             query_param="collaboration_type",
@@ -383,6 +403,8 @@ class TransactionAggregation(AggregationView):
             renamed_fields="collaboration_type",
             queryset=CollaborationType.objects.all(),
             serializer=CodelistSerializer,
+            name_search_field="activity__collaboration_type__name",
+            renamed_name_search_field="collaboration_type_name"
         ),
         GroupBy(
             query_param="default_flow_type",
@@ -412,7 +434,13 @@ class TransactionAggregation(AggregationView):
             queryset=TiedStatus.objects.all(),
             serializer=CodelistSerializer,
         ),
-        # TODO: Make these a full date object instead - 2016-04-12
+        GroupBy(
+            query_param="policy_marker_significance",
+            fields="activity__activitypolicymarker__significance",
+            renamed_fields="significance",
+            queryset=PolicySignificance.objects.all(),
+            serializer=CodelistSerializer,
+        ),
         GroupBy(
             query_param="transaction_date_year",
             extra={
@@ -424,6 +452,20 @@ class TransactionAggregation(AggregationView):
                 ],
             },
             fields="transaction_date_year",
+        ),
+        GroupBy(
+            query_param="transaction_date_quarter",
+            extra={
+                'select': {
+                    'transaction_date_year': 'EXTRACT(YEAR FROM "transaction_date")::integer',
+                    'transaction_date_quarter': 'EXTRACT(QUARTER FROM "transaction_date")::integer',
+                },
+                'where': [
+                    'EXTRACT(YEAR FROM "transaction_date")::integer IS NOT NULL',
+                    'EXTRACT(QUARTER FROM "transaction_date")::integer IS NOT NULL',
+                ],
+            },
+            fields=("transaction_date_year", "transaction_date_quarter")
         ),
         GroupBy(
             query_param="transaction_date_month",

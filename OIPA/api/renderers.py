@@ -17,7 +17,7 @@ class XMLRenderer(BaseRenderer):
     charset = 'UTF-8'
     root_tag_name = 'iati-activities'
     item_tag_name = 'iati-activity'
-    version = '2.01'
+    version = '2.02'
 
     def render(self, data, accepted_media_type=None, renderer_context=None):
         """
@@ -59,6 +59,7 @@ class XMLRenderer(BaseRenderer):
 
 
             for key, value in six.iteritems(data):
+
                 if key in attributes: continue
 
                 if key == 'text':
@@ -66,6 +67,12 @@ class XMLRenderer(BaseRenderer):
                 elif isinstance(value, list):
                     self._to_xml(xml, value, parent_name=key)
                 else:
+                    # TODO remove this ugly hack by adjusting the resultindicatorperiod actual / target models. 30-08-16
+                    # currently actuals are stored on the resultindicatorperiod, hence we need to remove empty actuals here.
+                    if key in ['actual','target']:
+                        if value.items()[0][0] != 'value':
+                            continue
+
                     self._to_xml(etree.SubElement(xml, key.replace('_', '-')), value)
 
         elif data is None:
@@ -75,11 +82,20 @@ class XMLRenderer(BaseRenderer):
             xml.text = six.text_type(data)
             pass
 
+import csv
 from rest_framework_csv.renderers import CSVRenderer
 
-class PaginatedCSVRenderer (CSVRenderer):
+class PaginatedCSVRenderer(CSVRenderer):
     results_field = 'results'
     header = []
+
+    def __init__(self, *args, **kwargs):
+        super(PaginatedCSVRenderer, self).__init__(*args, **kwargs)
+        self.writer_opts = {
+          'quoting': csv.QUOTE_ALL,
+          'quotechar': '"'.encode('utf-8'),
+          'delimiter': ';'.encode('utf-8')
+        }
 
     def render(self, data, *args, **kwargs):
         if not isinstance(data, list):

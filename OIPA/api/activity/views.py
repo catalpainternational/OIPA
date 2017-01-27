@@ -1,11 +1,5 @@
-from rest_framework.generics import ListAPIView
-from rest_framework.generics import GenericAPIView
-from rest_framework.response import Response
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.filters import DjangoFilterBackend
-
-from iati.models import Activity
-from iati.models import ActivityParticipatingOrganisation
-from iati.models import ActivityReportingOrganisation
 
 from api.activity import serializers as activitySerializers
 from api.activity import filters
@@ -13,14 +7,16 @@ from api.generics.filters import DistanceFilter
 from api.generics.filters import SearchFilter
 from api.generics.views import DynamicListView, DynamicDetailView
 from api.transaction.serializers import TransactionSerializer
+from api.activity.tree_serializers import ActivityTree
 from api.transaction.filters import TransactionFilter
 
 from api.aggregation.views import AggregationView, Aggregation, GroupBy
 
-from django.db.models import Count, Sum, Q, F
+from django.db.models import Count, Sum, F
 
 from geodata.models import Country
 from geodata.models import Region
+from iati.models import Activity
 from iati.models import Sector
 from iati.models import ActivityStatus
 from iati.models import PolicyMarker
@@ -33,15 +29,15 @@ from iati.models import TiedStatus
 from iati.models import ActivityParticipatingOrganisation
 from iati.models import OrganisationType
 from iati.models import Organisation
-from iati.models import ActivityReportingOrganisation
+from iati.models import PolicySignificance
 
 from api.activity.serializers import CodelistSerializer
 from api.country.serializers import CountrySerializer
 from api.region.serializers import RegionSerializer
 from api.sector.serializers import SectorSerializer
-from api.sector.serializers import SectorSerializer
-from api.activity.serializers import ActivitySerializer
 from api.organisation.serializers import OrganisationSerializer
+
+
 
 class ActivityAggregations(AggregationView):
     """
@@ -57,20 +53,13 @@ class ActivityAggregations(AggregationView):
     - `recipient_country`
     - `recipient_region`
     - `sector`
+    - `related_activity`
     - `reporting_organisation`
-    - `participating_organisation_ref`
-    - `participating_organisation_name`
+    - `participating_organisation`
+    - `participating_organisation_type`
+    - `document_link_category`
     - `activity_status`
-    - `policy_marker`
     - `collaboration_type`
-    - `default_flow_type`
-    - `default_aid_type`
-    - `default_finance_type`
-    - `default_tied_status`
-    - `budget_per_year`
-    - `budget_per_quarter`
-    - `transactions_per_quarter`
-    - `transaction_date_year`
 
     ## Aggregation options
 
@@ -80,7 +69,7 @@ class ActivityAggregations(AggregationView):
     can be one or more (comma separated values) of:
 
     - `count`
-    - `budget`
+    - `count_distinct`
 
     ## Request parameters
 
@@ -100,14 +89,9 @@ class ActivityAggregations(AggregationView):
             annotate=Count('id'),
         ),
         Aggregation(
-            query_param='transaction_count',
-            field='transaction_count',
-            annotate=Count('transaction', distinct=True),
-        ),
-        Aggregation(
-            query_param='budget',
-            field='budget',
-            annotate=Sum('budget__value'),
+            query_param='count_distinct',
+            field='count',
+            annotate=Count('id', distinct=True),
         ),
     )
 
@@ -118,13 +102,17 @@ class ActivityAggregations(AggregationView):
             queryset=Country.objects.all(),
             serializer=CountrySerializer,
             serializer_fields=('url', 'code', 'name', 'location'),
-        ),
+            name_search_field='recipient_country__name',
+            renamed_name_search_field='recipient_country_name',
+        ),  
         GroupBy(
             query_param="recipient_region",
             fields="recipient_region",
             queryset=Region.objects.all(),
             serializer=RegionSerializer,
             serializer_fields=('url', 'code', 'name', 'location'),
+            name_search_field="recipient_region__name",
+            renamed_name_search_field="recipient_region_name",
         ),
         GroupBy(
             query_param="sector",
@@ -132,6 +120,8 @@ class ActivityAggregations(AggregationView):
             queryset=Sector.objects.all(),
             serializer=SectorSerializer,
             serializer_fields=('url', 'code', 'name', 'location'),
+            name_search_field="sector__name",
+            renamed_name_search_field="sector_name",
         ),
         GroupBy(
             query_param="related_activity",
@@ -144,14 +134,17 @@ class ActivityAggregations(AggregationView):
             renamed_fields="reporting_organisation",
             queryset=Organisation.objects.all(),
             serializer=OrganisationSerializer,
-            serializer_main_field='organisation_identifier'
+            serializer_main_field='organisation_identifier',
+            name_search_field="reporting_organisations__organisation__primary_name",
+            renamed_name_search_field="reporting_organisation_name"
         ),
         GroupBy(
             query_param="participating_organisation",
-            fields="participating_organisations__normalized_ref",
-            renamed_fields="participating_organisation",
+            fields=("participating_organisations__primary_name", "participating_organisations__normalized_ref"),
+            renamed_fields=("participating_organisation", "participating_organisation_ref"),
             queryset=ActivityParticipatingOrganisation.objects.all(),
-            # serializer=OrganisationSerializer,
+            name_search_field="participating_organisations__primary_name",
+            renamed_name_search_field="participating_organisation_name"
         ),
         GroupBy(
             query_param="participating_organisation_type",
@@ -159,6 +152,8 @@ class ActivityAggregations(AggregationView):
             renamed_fields="participating_organisation_type",
             queryset=OrganisationType.objects.all(),
             serializer=CodelistSerializer,
+            name_search_field="participating_organisations__type__name",
+            renamed_name_search_field="participating_organisations_type_name"
         ),
         GroupBy(
             query_param="document_link_category",
@@ -166,77 +161,32 @@ class ActivityAggregations(AggregationView):
             renamed_fields="document_link_category",
             queryset=DocumentCategory.objects.all(),
             serializer=CodelistSerializer,
+            name_search_field="documentlink__categories__name",
+            renamed_name_search_field="document_link_category_name"
         ),
         GroupBy(
             query_param="activity_status",
             fields="activity_status",
             queryset=ActivityStatus.objects.all(),
             serializer=CodelistSerializer,
-        ),
-        GroupBy(
-            query_param="policy_marker",
-            fields="policy_marker",
-            queryset=PolicyMarker.objects.all(),
-            serializer=CodelistSerializer,
+            name_search_field="activity_status__name",
+            renamed_name_search_field="activity_status_name"
         ),
         GroupBy(
             query_param="collaboration_type",
-            fields="activity__collaboration_type",
+            fields="collaboration_type",
             renamed_fields="collaboration_type",
             queryset=CollaborationType.objects.all(),
             serializer=CodelistSerializer,
+            name_search_field="collaboration_type__name",
+            renamed_name_search_field="collaboration_type_name"
         ),
         GroupBy(
-            query_param="default_flow_type",
-            fields="default_flow_type",
-            queryset=FlowType.objects.all(),
+            query_param="policy_marker_significance",
+            fields="activitypolicymarker__significance",
+            renamed_fields="significance",
+            queryset=PolicySignificance.objects.all(),
             serializer=CodelistSerializer,
-        ),
-        GroupBy(
-            query_param="default_finance_type",
-            fields="activity__default_finance_type",
-            renamed_fields="default_finance_type",
-            queryset=FinanceType.objects.all(),
-            serializer=CodelistSerializer,
-        ),
-        GroupBy(
-            query_param="default_aid_type",
-            fields="default_aid_type",
-            queryset=AidType.objects.all(),
-            serializer=CodelistSerializer,
-        ),
-        GroupBy(
-            query_param="default_tied_status",
-            fields="default_tied_status",
-            queryset=TiedStatus.objects.all(),
-            serializer=CodelistSerializer,
-        ),
-        # TODO: Make these a full date object instead - 2016-04-12
-        GroupBy(
-            query_param="budget_year",
-            extra={
-                'select': {
-                    'budget_year': 'EXTRACT(YEAR FROM "period_start")::integer',
-                },
-                'where': [
-                    'EXTRACT(YEAR FROM "period_start")::integer IS NOT NULL',
-                ],
-            },
-            fields="budget_year",
-        ),
-        GroupBy(
-            query_param="budget_month",
-            extra={
-                'select': {
-                    'budget_year': 'EXTRACT(YEAR FROM "period_start")::integer',
-                    'budget_month': 'EXTRACT(MONTH FROM "period_start")::integer',
-                },
-                'where': [
-                    'EXTRACT(YEAR FROM "period_start")::integer IS NOT NULL',
-                    'EXTRACT(MONTH FROM "period_start")::integer IS NOT NULL',
-                ],
-            },
-            fields=("budget_year", "budget_month")
         ),
     )
 
@@ -298,6 +248,11 @@ class ActivityList(DynamicListView):
     To search on subset of these fields the `q_fields` parameter can be used, like so;
     `q_fields=iati_identifier,title,description`
 
+    By default, search only return results if the hit resembles a full word. 
+    This can be altered through the `q_lookup` parameter. Options for this parameter are:
+
+    - `exact` (default): Only return results when the query hit is a full word.
+    - `startswith`: Also returns results when the word stars with the query. 
 
     ## Ordering
 
@@ -319,9 +274,7 @@ class ActivityList(DynamicListView):
     - `activity_expenditure_value`
     - `activity_plus_child_budget_value`
 
-
     The user may also specify reverse orderings by prefixing the field name with '-', like so: `-title`
-
 
     ## Aggregations
 
@@ -337,21 +290,6 @@ class ActivityList(DynamicListView):
     `fields=activity_id,title,country,any_field`.
 
     """
-    # note; This is removed from the docs as the aggregations are deactivated atm
-    # ## Available aggregations
-
-    # API request may include `aggregations` parameter.
-    # This parameter controls result aggregations and
-    # can be one or more (comma separated values) of:
-
-    # - `total_budget`: Calculate total budget of activities
-    #     presented in filtered activities list.
-    # - `disbursement`: Calculate total disbursement of activities presented in
-    #     filtered activities list.
-    # - `commitment`: Calculate total commitment of activities presented in
-    #     filtered activities list.
-
-    # For more advanced aggregations please use the /activities/aggregations endpoint.
 
     queryset = Activity.objects.all()
     filter_backends = (SearchFilter, DjangoFilterBackend, DistanceFilter, filters.RelatedOrderingFilter,)
@@ -365,13 +303,13 @@ class ActivityList(DynamicListView):
         'descriptions', 
         'transactions', 
         'reporting_organisations',
-        'last_updated_datetime',
-    )
+        'last_updated_datetime')
 
     always_ordering = 'id'
 
     ordering_fields = (
         'title',
+        'recipient_country',
         'planned_start_date',
         'actual_start_date',
         'planned_end_date',
@@ -383,8 +321,7 @@ class ActivityList(DynamicListView):
         'activity_incoming_funds_value',
         'activity_disbursement_value',
         'activity_expenditure_value',
-        'activity_plus_child_budget_value',
-    )
+        'activity_plus_child_budget_value')
 
 
 class ActivityDetail(DynamicDetailView):
@@ -405,8 +342,10 @@ class ActivityDetail(DynamicDetailView):
 
     All information on activity transactions can be found on a separate page:
 
-    - `/api/activities/{activity_id}/transactions`:
+    - `/api/activities/{activity_id}/transactions/`:
         List of transactions.
+    - `/api/activities/{activity_id}/provider-activity-tree/`:
+        The upward and downward provider-activity-id traceability tree of this activity.
 
     ## Request parameters
 
@@ -417,103 +356,7 @@ class ActivityDetail(DynamicDetailView):
     filter_class = filters.ActivityFilter
     serializer_class = activitySerializers.ActivitySerializer
 
-
-class ActivitySectors(ListAPIView):
-    """
-    Returns a list of IATI Activity Sectors stored in OIPA.
-
-    ## URI Format
-
-    ```
-    /api/activities/{activity_id}/sectors
-    ```
-
-    ### URI Parameters
-
-    - `activity_id`: Desired activity ID
-
-    ## Result details
-
-    Each result item contains:
-
-    - `sector`: Sector name
-    - `percentage`: The percentage of total commitments or total
-        activity budget to this activity sector.
-    - `vocabulary`: An IATI code for the vocabulary (see codelist) used
-        for sector classifications.
-
-    """
-    serializer_class = activitySerializers.ActivitySectorSerializer
-
-    def get_queryset(self):
-        pk = self.kwargs.get('pk')
-        return Activity(pk=pk).activitysector_set.all()
-
-
-class ActivityParticipatingOrganisations(ListAPIView):
-    """
-    Returns a list of IATI Activity Participating Organizations stored in OIPA.
-
-    ## URI Format
-
-    ```
-    /api/activities/{activity_id}/participating-orgs
-    ```
-
-    ### URI Parameters
-
-    - `activity_id`: Desired activity ID
-
-    """
-    serializer_class = activitySerializers.ParticipatingOrganisationSerializer
-
-    def get_queryset(self):
-        pk = self.kwargs.get('pk')
-        return Activity(pk=pk).participating_organisations.all()
-
-
-class ActivityRecipientCountries(ListAPIView):
-    """
-    Returns a list of IATI Activity Recipient Countries stored in OIPA.
-
-    ## URI Format
-
-    ```
-    /api/activities/{activity_id}/recipient-countries
-    ```
-
-    ### URI Parameters
-
-    - `activity_id`: Desired activity ID
-
-    """
-    serializer_class = activitySerializers.RecipientCountrySerializer
-
-    def get_queryset(self):
-        pk = self.kwargs.get('pk')
-        return Activity(pk=pk).activityrecipientcountry_set.all()
-
-
-class ActivityRecipientRegions(ListAPIView):
-    """
-    Returns a list of IATI Activity Recipient Regions stored in OIPA.
-
-    ## URI Format
-
-    ```
-    /api/activities/{activity_id}/recipient-regions
-    ```
-
-    ### URI Parameters
-
-    - `activity_id`: Desired activity ID
-
-    """
-    serializer_class = activitySerializers.ActivityRecipientRegionSerializer
-
-    def get_queryset(self):
-        pk = self.kwargs.get('pk')
-        return Activity(pk=pk).activityrecipientregion_set.all()
+# TODO separate endpoints for expensive fields like ActivityLocations & ActivityResults 08-07-2016
 
 
 class ActivityTransactions(ListAPIView):
@@ -566,3 +409,23 @@ class ActivityTransactions(ListAPIView):
     def get_queryset(self):
         pk = self.kwargs.get('pk')
         return Activity(pk=pk).transaction_set.all()
+
+
+class ActivityProviderActivityTree(DynamicDetailView):
+    """
+    Returns the upward and downward traceability tree of this activity. Field specification:
+    
+    - `providing activities`: The upward three of all activities that are listed as provider-activity-id in this activity.
+    - `receiving activities`: The downward tree of all activities that list this activity as provider-activity-id.
+
+    ## URI Format
+
+    ```
+    /api/activities/{activity_id}/provider-activity-tree
+    ```
+    """
+    serializer_class = ActivityTree
+    queryset = Activity.objects.all()
+
+
+

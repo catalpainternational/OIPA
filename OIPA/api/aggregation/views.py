@@ -1,7 +1,6 @@
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
-from rest_framework.serializers import BaseSerializer
-from django.db.models import  Q, F
+from django.db.models import Q, F
 from api.aggregation.aggregation import aggregate
 
 
@@ -14,7 +13,6 @@ class AggregationView(GenericAPIView):
         The results are all queried so this gives at most a small performance boost
         because there's less data to serialize.
         """
-
         if page_size:
 
             if not page:
@@ -76,7 +74,7 @@ class AggregationView(GenericAPIView):
 
 
 class GroupBy():
-    def __init__(self, query_param=None, fields=None, queryset=None, serializer=None, serializer_main_field="code", serializer_fk="pk", serializer_fields=(), extra=None, renamed_fields=None):
+    def __init__(self, query_param=None, fields=None, queryset=None, serializer=None, serializer_main_field="code", serializer_fk="pk", serializer_fields=(), extra=None, renamed_fields=None, name_search_field='', renamed_name_search_field=''):
         """
         fields should be a dictionary of field: rendered_field_name
         """
@@ -85,6 +83,12 @@ class GroupBy():
             raise ValueError("not all required params were passed")
 
         self.query_param = query_param
+        self.name_search_field = name_search_field
+
+        if renamed_name_search_field:
+            self.renamed_name_search_field = renamed_name_search_field
+        else:
+            self.renamed_name_search_field = self.name_search_field
 
         if type(fields) is str:
             self.fields = (fields,)
@@ -172,12 +176,13 @@ class GroupBy():
         result = map(lambda i: merge([i, dict([
             (
                 field, 
-                data_dict.get(i[field])
+                data_dict.get(str(i[field]))
             )
             ])
             ]), l)
 
         return result
+
 
 class Aggregation():
 

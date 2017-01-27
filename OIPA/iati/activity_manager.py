@@ -29,7 +29,6 @@ class ActivityQuerySet(SearchQuerySet):
             .prefetch_results() \
             .prefetch_locations() \
             .prefetch_related_activities() \
-            .prefetch_transactions() \
             .prefetch_aggregations()
 
     def prefetch_default_aid_type(self):
@@ -206,7 +205,13 @@ class ActivityQuerySet(SearchQuerySet):
             'resultindicatorperiod_set',
             queryset=ResultIndicatorPeriod.objects.all()
                 .select_related('result_indicator')
-                .prefetch_related(period_target_comment_prefetch, period_actual_comment_prefetch)
+                .prefetch_related(
+                    'resultindicatorperiodtargetlocation_set', 
+                    'resultindicatorperiodactuallocation_set', 
+                    'resultindicatorperiodtargetdimension_set',
+                    'resultindicatorperiodactualdimension_set',
+                    period_target_comment_prefetch, 
+                    period_actual_comment_prefetch)
         )
 
         indicator_baseline_comment_prefetch = Prefetch(
@@ -239,17 +244,45 @@ class ActivityQuerySet(SearchQuerySet):
         )
 
     def prefetch_locations(self):
-        from iati.models import Location
+        from iati.models import Location, LocationName, LocationDescription, LocationAdministrative
+        from iati.models import LocationActivityDescription, Narrative, GeographicVocabulary
+
+        narrative_prefetch = Prefetch(
+            'narratives',
+            queryset=Narrative.objects.all().select_related('language'))
+
+        location_name_prefetch = Prefetch(
+            'locationname_set',
+            queryset=LocationName.objects.all()
+            .prefetch_related(narrative_prefetch))
+
+        location_administrative_prefetch = Prefetch(
+            'locationadministrative_set',
+            queryset=LocationAdministrative.objects.all()
+            .select_related('vocabulary'))
+
+
+        location_description_prefetch = Prefetch(
+            'locationdescription_set',
+            queryset=LocationDescription.objects.all()
+            .prefetch_related(narrative_prefetch))
+
+        location_activity_description_prefetch = Prefetch(
+            'locationactivitydescription_set',
+            queryset=LocationActivityDescription.objects.all()
+            .prefetch_related(narrative_prefetch))
 
         return self.prefetch_related(
             Prefetch(
                 'location_set',
                 queryset=Location.objects.all()
-                .select_related('location_reach')
-                .select_related('location_id_vocabulary')
-                .select_related('location_class')
-                .select_related('feature_designation')
-                .select_related('exactness'))
+                .select_related('location_reach', 'location_id_vocabulary', 'location_class', 'feature_designation__category', 'exactness')
+                .prefetch_related(
+                    location_name_prefetch,
+                    location_administrative_prefetch,
+                    location_description_prefetch,
+                    location_activity_description_prefetch
+                ))
         )
 
     def prefetch_related_activities(self):
@@ -262,24 +295,61 @@ class ActivityQuerySet(SearchQuerySet):
                 .select_related('type'))
         )
 
-    def prefetch_transactions(self):
-        from iati.transaction.models import Transaction
+    def prefetch_contact_info(self):
+        from iati.models import ContactInfo, Narrative
 
-        # TODO: Nullable foreign keys do not get prefetched in select_related() call - 2016-01-20
+        organisation_prefetch = Prefetch(
+            'organisation__narratives',
+            queryset=Narrative.objects.all()
+            .select_related('language'))
+
+        department_prefetch = Prefetch(
+            'department__narratives',
+            queryset=Narrative.objects.all()
+            .select_related('language'))
+
+        person_name_prefetch = Prefetch(
+            'person_name__narratives',
+            queryset=Narrative.objects.all()
+            .select_related('language'))
+
+        job_title_prefetch = Prefetch(
+            'job_title__narratives',
+            queryset=Narrative.objects.all()
+            .select_related('language'))
+
+        mailing_address_prefetch = Prefetch(
+            'mailing_address__narratives',
+            queryset=Narrative.objects.all()
+            .select_related('language'))
+
         return self.prefetch_related(
             Prefetch(
-                'transaction_set',
-                queryset=Transaction.objects.all() \
-                .select_related('transaction_type')
-                .select_related('currency')
-                .select_related('disbursement_channel')
-                .select_related('flow_type')
-                .select_related('finance_type')
-                .select_related('aid_type')
-                .select_related('tied_status')
-                .prefetch_all()
-            )
+                'contactinfo_set',
+                queryset=ContactInfo.objects.all()
+                .select_related('type', 'organisation', 'department', 'person_name', 'job_title', 'mailing_address')
+                .prefetch_related(organisation_prefetch, department_prefetch, person_name_prefetch, job_title_prefetch, mailing_address_prefetch))
         )
+
+
+    # def prefetch_transactions(self):
+    #     from iati.transaction.models import Transaction
+
+    #     # TODO: Nullable foreign keys do not get prefetched in select_related() call - 2016-01-20
+    #     return self.prefetch_related(
+    #         Prefetch(
+    #             'transaction_set',
+    #             queryset=Transaction.objects.all() \
+    #             .select_related('transaction_type')
+    #             .select_related('currency')
+    #             .select_related('disbursement_channel')
+    #             .select_related('flow_type')
+    #             .select_related('finance_type')
+    #             .select_related('aid_type')
+    #             .select_related('tied_status')
+    #             .prefetch_all()
+    #         )
+    #     )
 
     def prefetch_aggregations(self):
         from iati.models import ActivityAggregation, ChildAggregation, ActivityPlusChildAggregation

@@ -1,13 +1,9 @@
 import uuid
-import gc
-
 from django.conf import settings
-from django.utils import six
 from django.db.models.sql.constants import QUERY_TERMS
 from django.db.models import Q
 from django_filters import CharFilter
-from django_filters import Filter, FilterSet, NumberFilter, DateFilter, BooleanFilter
-from django_filters.filters import Lookup
+from django_filters import Filter, FilterSet, BooleanFilter
 from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.gis.measure import D
 from rest_framework import filters
@@ -27,14 +23,16 @@ class DistanceFilter(filters.BaseFilterBackend):
         distance_km = request.query_params.get('location_distance_km', None)
 
         if location_longitude and location_latitude and distance_km:
-            pnt = GEOSGeometry('POINT({0} {1})'.format(location_longitude, location_latitude))
+            pnt = GEOSGeometry('POINT({0} {1})'.format(location_longitude, location_latitude), srid=4326)
 
             if Location is not queryset.model:
                 model_prefix = 'location__'
             else:
                 model_prefix = ''
+                
+            loc_ids = Location.objects.filter(**{'point_pos__distance_lte': (pnt, D(km=distance_km))}).values('id')
 
-            return queryset.filter(**{'{}point_pos__distance_lte'.format(model_prefix): (pnt, D(km=distance_km))})
+            return queryset.filter(**{"{}id__in".format(model_prefix): loc_ids})
 
         return queryset
 
@@ -43,10 +41,15 @@ class SearchFilter(filters.BaseFilterBackend):
     def filter_queryset(self, request, queryset, view):
 
         query = request.query_params.get('q', None)
+        query_lookup = request.query_params.get('q_lookup', None)
+        lookup_type = 'ft'
+        if query_lookup:
+            if query_lookup == 'exact':
+                lookup_type = 'ft'
+            if query_lookup == 'startswith':
+                lookup_type = 'ft_startswith'
 
         if query:
-            if settings.ROOT_ORGANISATIONS:
-                queryset = queryset.filter(is_searchable=True)
 
             query_fields = request.query_params.get('q_fields')
             dict_query_list = [TSConfig('simple'), query]
@@ -58,16 +61,18 @@ class SearchFilter(filters.BaseFilterBackend):
             if Activity is not queryset.model:
                 model_prefix = 'activity__'
 
+            # if root organisations set, only query searchable activities
+            if settings.ROOT_ORGANISATIONS:
+                queryset = queryset.filter(**{'{0}is_searchable'.format(model_prefix): True})
+
             if query_fields:
                 query_fields = query_fields.split(',')
 
                 if isinstance(query_fields, list):
-                    filters = combine_filters([Q(**{model_prefix + 'activitysearch__{}__ft'.format(field): dict_query_list}) for field in query_fields])
+                    filters = combine_filters([Q(**{'{0}activitysearch__{1}__{2}'.format(model_prefix, field, lookup_type): dict_query_list}) for field in query_fields])
                     return queryset.filter(filters)
-
             else:
-
-                return queryset.filter(**{'{}activitysearch__text__ft'.format(model_prefix): dict_query_list})
+                return queryset.filter(**{'{0}activitysearch__text__{1}'.format(model_prefix, lookup_type): dict_query_list})
 
         return queryset
 
@@ -84,6 +89,13 @@ class CommaSeparatedCharFilter(CharFilter):
         return super(CommaSeparatedCharFilter, self).filter(qs, value)
 
 
+class StickyCharFilter(CharFilter):
+
+    def filter(self, qs, value):
+        qs._next_is_sticky()
+        return super(StickyCharFilter, self).filter(qs, value)
+
+
 class CommaSeparatedStickyCharFilter(CharFilter):
 
     def filter(self, qs, value):
@@ -96,22 +108,33 @@ class CommaSeparatedStickyCharFilter(CharFilter):
 
         return super(CommaSeparatedStickyCharFilter, self).filter(qs, value)
 
+#
+# class CommaSeparatedCharMultipleFilter(CharFilter):
+#     """
+#     Comma separated filter for lookups like 'exact', 'iexact', etc..
+#     """
+#     def filter(self, qs, value):
+#         if not value: return qs
+#
+#         values = value.split(',')
+#
+#         lookup_type = self.lookup_type
+#
+#         filters = [Q(**{"{}__{}".format(self.name, lookup_type): value}) for value in values]
+#         final_filters = reduce(lambda a, b: a | b, filters)
+#
+#         return qs.filter(final_filters)
+#
+#
 
-class CommaSeparatedCharMultipleFilter(CharFilter):
+class StickyBooleanFilter(BooleanFilter):
     """
     Comma separated filter for lookups like 'exact', 'iexact', etc..
     """
     def filter(self, qs, value):
-        if not value: return qs
+        qs._next_is_sticky()
 
-        values = value.split(',')
-
-        lookup_type = self.lookup_type
-
-        filters = [Q(**{"{}__{}".format(self.name, lookup_type): value}) for value in values]
-        final_filters = reduce(lambda a, b: a | b, filters)
-
-        return qs.filter(final_filters)
+        return super(StickyBooleanFilter, self).filter(qs, value)
 
 
 class CommaSeparatedDateRangeFilter(Filter):
