@@ -5,6 +5,7 @@ from django.db.models.fields.related import OneToOneRel
 from django_filters import FilterSet
 from django_filters import NumberFilter
 from django_filters import DateFilter
+from django_filters import DateTimeFilter
 from django_filters import BooleanFilter
 from django_filters import TypedChoiceFilter
 
@@ -217,7 +218,7 @@ class ActivityFilter(TogetherFilterSet):
         name='region__code',
         fk='activity',
     )
-    
+
     sector = ToManyFilter(
         qs=ActivitySector,
         lookup_type='in',
@@ -503,7 +504,7 @@ class RelatedOrderingFilter(filters.OrderingFilter):
         always_ordering = getattr(view, 'always_ordering', None)
 
         if ordering and always_ordering:
-            ordering = ordering + [always_ordering] 
+            ordering = ordering + [always_ordering]
             queryset.distinct(always_ordering)
 
         return ordering
@@ -512,7 +513,7 @@ class RelatedOrderingFilter(filters.OrderingFilter):
 
         ordering = self.get_ordering(request, queryset, view)
 
-        if ordering: 
+        if ordering:
             ordering = [order.replace("-", "") for order in ordering]
             queryset = queryset.distinct(*ordering)
 
