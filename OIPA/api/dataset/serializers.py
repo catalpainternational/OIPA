@@ -82,7 +82,8 @@ class DatasetSerializer(DynamicFieldsModelSerializer):
             'iati_standard_version',
             'sha1',
             'note_count',
-            'notes')
+            'notes',
+            'is_parsed')
 
     def get_type(self, obj):
         return obj.get_type_display()

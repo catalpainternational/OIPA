@@ -29,6 +29,7 @@ class DatasetList(DynamicListView):
     - `note_message_contains` (*optional*): Word the message contains.
     - `note_count_gte` (*optional*): Note count greater or equal.
     - `date_updated_gte` (*optional*): Last updated greater or equal, format exampe; `2016-01-01%2012:00:00`.
+    - `is_parsed` (*optional*): Has this source been parsed yet.
 
     ## Ordering
 
@@ -66,7 +67,8 @@ class DatasetList(DynamicListView):
         'date_updated',
         'last_found_in_registry',
         'iati_standard_version',
-        'note_count')
+        'note_count',
+        'is_parsed')
 
 
 class DatasetDetail(RetrieveAPIView):
@@ -96,7 +98,8 @@ class DatasetDetail(RetrieveAPIView):
         'last_found_in_registry',
         'iati_standard_version',
         'note_count',
-        'notes')
+        'notes',
+        'is_parsed')
 
 
 class DatasetAggregations(AggregationView):
@@ -106,7 +109,7 @@ class DatasetAggregations(AggregationView):
     ## Group by options
 
     API request has to include `group_by` parameter.
-    
+
     This parameter controls result aggregations and
     can be one or more (comma separated values) of:
 
@@ -116,12 +119,12 @@ class DatasetAggregations(AggregationView):
     - `field`
     - `model`
     - `message`
-    
+
 
     ## Aggregation options
 
     API request has to include `aggregations` parameter.
-    
+
     This parameter controls result aggregations and
     can be one or more (comma separated values) of:
 
@@ -137,7 +140,7 @@ class DatasetAggregations(AggregationView):
 
     filter_backends = ( DjangoFilterBackend,)
     filter_class = DatasetFilter
-    
+
     allowed_aggregations = (
         Aggregation(
             query_param='note_count',
