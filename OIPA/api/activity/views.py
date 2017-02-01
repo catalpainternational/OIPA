@@ -46,7 +46,7 @@ class ActivityAggregations(AggregationView):
     ## Group by options
 
     API request has to include `group_by` parameter.
-    
+
     This parameter controls result aggregations and
     can be one or more (comma separated values) of:
 
@@ -64,7 +64,7 @@ class ActivityAggregations(AggregationView):
     ## Aggregation options
 
     API request has to include `aggregations` parameter.
-    
+
     This parameter controls result aggregations and
     can be one or more (comma separated values) of:
 
@@ -104,7 +104,7 @@ class ActivityAggregations(AggregationView):
             serializer_fields=('url', 'code', 'name', 'location'),
             name_search_field='recipient_country__name',
             renamed_name_search_field='recipient_country_name',
-        ),  
+        ),
         GroupBy(
             query_param="recipient_region",
             fields="recipient_region",
@@ -227,6 +227,7 @@ class ActivityList(DynamicListView):
     - `related_activity_sector_category` (*optional*): Comma separated list of 3-digit sector codes.
     - `transaction_provider_activity` (*optional*): Comma separated list of activity id's.
     - `transaction_date_year` (*optional*): Comma separated list of years in which the activity should have transactions.
+    - `xml_source_ref` (*optional*): Comma separated list of references to the source xml of an activity.
 
     ## Text search
 
@@ -248,11 +249,11 @@ class ActivityList(DynamicListView):
     To search on subset of these fields the `q_fields` parameter can be used, like so;
     `q_fields=iati_identifier,title,description`
 
-    By default, search only return results if the hit resembles a full word. 
+    By default, search only return results if the hit resembles a full word.
     This can be altered through the `q_lookup` parameter. Options for this parameter are:
 
     - `exact` (default): Only return results when the query hit is a full word.
-    - `startswith`: Also returns results when the word stars with the query. 
+    - `startswith`: Also returns results when the word stars with the query.
 
     ## Ordering
 
@@ -285,7 +286,7 @@ class ActivityList(DynamicListView):
     ## Result details
 
     Each item contains summarized information on the activity being shown,
-    including the URI to activity details, which contain all information. 
+    including the URI to activity details, which contain all information.
     To show more information in list view the `fields` parameter can be used. Example;
     `fields=activity_id,title,country,any_field`.
 
@@ -297,13 +298,14 @@ class ActivityList(DynamicListView):
     serializer_class = activitySerializers.ActivitySerializer
 
     fields = (
-        'url', 
-        'iati_identifier', 
-        'title', 
-        'descriptions', 
-        'transactions', 
+        'url',
+        'iati_identifier',
+        'title',
+        'descriptions',
+        'transactions',
         'reporting_organisations',
-        'last_updated_datetime')
+        'last_updated_datetime',
+        'xml_source_ref')
 
     always_ordering = 'id'
 
@@ -414,7 +416,7 @@ class ActivityTransactions(ListAPIView):
 class ActivityProviderActivityTree(DynamicDetailView):
     """
     Returns the upward and downward traceability tree of this activity. Field specification:
-    
+
     - `providing activities`: The upward three of all activities that are listed as provider-activity-id in this activity.
     - `receiving activities`: The downward tree of all activities that list this activity as provider-activity-id.
 

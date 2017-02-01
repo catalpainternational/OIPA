@@ -298,7 +298,7 @@ class ActivityRecipientRegionSerializer(DynamicFieldsModelSerializer):
         )
 
 class HumanitarianScopeSerializer(DynamicFieldsModelSerializer):
-    type = CodelistSerializer() 
+    type = CodelistSerializer()
     vocabulary = VocabularySerializer()
     vocabulary_uri = serializers.URLField()
     code = CodelistSerializer()
@@ -411,7 +411,7 @@ class ResultIndicatorBaselineSerializer(serializers.Serializer):
 class ResultIndicatorSerializer(serializers.ModelSerializer):
     title = NarrativeContainerSerializer(source="resultindicatortitle")
     description = NarrativeContainerSerializer(source="resultindicatordescription")
-    #  TODO 2.02 reference = ? 
+    #  TODO 2.02 reference = ?
     baseline = ResultIndicatorBaselineSerializer(source="*")
     period = ResultIndicatorPeriodSerializer(source='resultindicatorperiod_set', many=True)
     measure = CodelistSerializer()
@@ -451,7 +451,7 @@ class ContactInfoSerializer(serializers.ModelSerializer):
         )
 
 class ResultSerializer(serializers.ModelSerializer):
-    type = CodelistSerializer() 
+    type = CodelistSerializer()
     title = NarrativeContainerSerializer(source="resulttitle")
     description = NarrativeContainerSerializer(source="resultdescription")
     indicator = ResultIndicatorSerializer(source='resultindicator_set', many=True)
@@ -498,7 +498,7 @@ class LocationSerializer(serializers.ModelSerializer):
     exactness = CodelistSerializer()
     location_class = CodelistSerializer()
     feature_designation = CodelistCategorySerializer()
-    
+
     class Meta:
         model = iati_models.Location
         fields = (
@@ -586,7 +586,7 @@ class ActivitySerializer(DynamicFieldsModelSerializer):
         many=True,
         source='documentlink_set')
     related_activities = RelatedActivitySerializer(
-        many=True, 
+        many=True,
         source='relatedactivity_set')
 
     # TODO ; add legacy-data serializer? note: we dont parse legacy data atm.
@@ -596,17 +596,18 @@ class ActivitySerializer(DynamicFieldsModelSerializer):
     # conditions = serializers.ConditionsSerializer(many=True,source="?")
 
     results = ResultSerializer(many=True, source="result_set")
-    
+
     # TODO ; add crs-add serializer
     # note; crs-add has a sequence in CrsAddSerializer
     # crs_add = serializers.CrsAddSerializer(many=True, source="?")
 
     # TODO ; add fss serializer
-    # fss = serializers.FssSerializer(many=True, source="?") 
-    
+    # fss = serializers.FssSerializer(many=True, source="?")
+
     # activity attributes
     last_updated_datetime = serializers.DateTimeField()
     xml_lang = serializers.CharField(source='default_lang')
+    xml_source_ref = serializers.CharField()
     default_currency = CodelistSerializer()
 
     humanitarian = serializers.BooleanField()
