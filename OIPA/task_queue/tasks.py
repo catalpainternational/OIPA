@@ -95,6 +95,17 @@ def parse_all_existing_sources():
 
 
 @job
+def parse_all_existing_organisation_sources():
+    """
+    Parse all organisation sources
+    """
+    queue = django_rq.get_queue("parser")
+
+    for e in IatiXmlSource.objects.all().filter(type=2):
+        queue.enqueue(parse_source_by_url, args=(e.source_url,))
+
+
+@job
 def parse_all_sources_by_publisher_ref(org_ref):
     queue = django_rq.get_queue("parser")
     for e in IatiXmlSource.objects.filter(publisher__org_id=org_ref):
@@ -269,7 +280,7 @@ def start_searchable_activities_task(counter=0):
     queue = django_rq.get_queue("parser")
 
     has_other_jobs = False
-    
+
     for w in workers:
         if len(w.queues):
             if w.queues[0].name == "parser":
