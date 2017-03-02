@@ -99,7 +99,7 @@ class DatasetSyncer():
             cur_type,
             iati_version):
 
-        if cur_type.lower() in ['organisation', 'organization']:
+        if cur_type and cur_type.lower() in ['organisation', 'organization']:
             cur_type = 2
         else:
             cur_type = 1
