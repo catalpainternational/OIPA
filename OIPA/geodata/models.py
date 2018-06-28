@@ -35,6 +35,7 @@ class Country(models.Model):
     center_longlat = models.PointField(null=True, blank=True)
     polygon = models.TextField(null=True, blank=True)
     data_source = models.CharField(max_length=20, null=True, blank=True)
+    geom = models.MultiPolygonField(srid=4326)
     objects = models.GeoManager()
 
     class Meta:
@@ -126,6 +127,7 @@ class Adm1Region(models.Model):
     gns_region = models.CharField(null=True, blank=True, max_length=100)
     polygon = models.TextField(null=True, blank=True)
     geometry_type = models.CharField(null=True, blank=True, max_length=50)
+    geom = models.MultiPolygonField(srid=4326)
 
     def __unicode__(self):
         return self.name
