@@ -208,7 +208,7 @@ ADMIN_REORDER = (
     # 'otp_static',
     # 'otp_totp',
     # 'otp_yubikey',
-    'sites'
+    'sites',
 )
 
 RQ_SHOW_ADMIN_LINK = True
