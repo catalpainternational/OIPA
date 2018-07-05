@@ -8,30 +8,40 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse_lazy
 from tzlocal import get_localzone
 
-PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
-PROJECT_PATH = os.path.join(PROJECT_ROOT, 'OIPA')
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+PROJECT_PATH = os.path.join(BASE_DIR, 'OIPA')
 PROJECT_NAME = _('OIPA')
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 DEBUG = False
+
 FTS_ENABLED = literal_eval(env.get('OIPA_FTS_ENABLED', 'True'))
 
 LOGIN_URL = reverse_lazy('two_factor:login')
 LOGIN_REDIRECT_URL = '/admin/'
 LOGOUT_URL = '/logout'
+
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 3000
+
+API_CACHE_SECONDS = 60 * 60 * 24
+
+ROOT_ORGANISATIONS = []
+
+# Python dotted path to the WSGI application used by Django's runserver.
+WSGI_APPLICATION = 'OIPA.wsgi.application'
+
+ERROR_LOGS_ENABLED = False
 
 SECRET_KEY = env.get('OIPA_SECRET_KEY', 'PXwlMOpfNJTgIdQeH5zk39jKfUMZPOUK')
 
 DATABASES = {
     'default': {
-        'ENGINE': env.get('OIPA_DB_ENGINE', 'django.contrib.gis.db.backends.postgis'),
-        'HOST': env.get('OIPA_DB_HOST', 'localhost'),
-        'PORT': env.get('OIPA_DB_PORT', '5432'),
-        'NAME': env.get('OIPA_DB_NAME', 'oipa'),
-        'USER': env.get('OIPA_DB_USER', 'oipa'),
-        'PASSWORD': env.get('OIPA_DB_PASSWORD', 'oipa'),
-        'CONN_MAX_AGE': int(env.get('OIPA_DB_CONN_MAX_AGE', 500))
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': 'oipa',
+        'USER': 'oipa',
+        'PASSWORD': 'oipa',
+        'HOST': 'localhost',
+        'PORT': '5432'
+        'CONN_MAX_AGE': 500
     },
 }
 
@@ -100,14 +110,14 @@ USE_TZ = False
 
 # URL for static files
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(PROJECT_ROOT, 'public', 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'public', 'static')
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'public', 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'public', 'media')
 
 
 # Additional locations of static files
-STATICFILES_DIRS = (os.path.join(PROJECT_PATH, 'static/'), )
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'), )
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'OIPA.wsgi.application'
