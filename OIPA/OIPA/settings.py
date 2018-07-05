@@ -1,5 +1,4 @@
 # Django settings for OIPA project.
-
 import os
 from os import environ as env
 import sys
@@ -8,8 +7,12 @@ from ast import literal_eval
 from django.core.urlresolvers import reverse_lazy
 from tzlocal import get_localzone
 
+PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
+PROJECT_PATH = os.path.join(PROJECT_ROOT, 'OIPA')
+PROJECT_NAME = _('OIPA')
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-DEBUG = literal_eval(env.get('OIPA_DEBUG', 'True'))
+DEBUG = False
 FTS_ENABLED = literal_eval(env.get('OIPA_FTS_ENABLED', 'True'))
 
 LOGIN_URL = reverse_lazy('two_factor:login')
@@ -77,15 +80,10 @@ ALLOWED_HOSTS = env.get('OIPA_ALLOWED_HOSTS', '*').split()
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
 # In a Windows environment this must be set to your system time zone.
+TIME_ZONE =  'Asia/Dili'
+LANGUAGE_CODE = 'en'
 
-
-TIME_ZONE = get_localzone().zone
-
-# Language code for this installation. All choices can be found here:
-# http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en-us'
-
-APPEND_SLASH = True
+# APPEND_SLASH = True
 
 SITE_ID = 1
 
@@ -96,29 +94,19 @@ USE_I18N = True
 # If you set this to False, Django will not format dates, numbers and
 # calendars according to the current locale.
 USE_L10N = True
-
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = False
 
 # URL for static files
 STATIC_URL = '/static/'
-STATIC_ROOT = os.environ.get(
-    'OIPA_STATIC_ROOT',
-    os.path.join(
-        os.path.dirname(BASE_DIR),
-        'public/static'))
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'public', 'static')
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.environ.get(
-    'OIPA_MEDIA_ROOT',
-    os.path.join(
-        os.path.dirname(BASE_DIR),
-        'public/media'))
+MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'public', 'media')
+
 
 # Additional locations of static files
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static/'),
-)
+STATICFILES_DIRS = (os.path.join(PROJECT_PATH, 'static/'), )
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'OIPA.wsgi.application'
@@ -352,6 +340,6 @@ REST_FRAMEWORK_EXTENSIONS = {
 }
 
 try:
-    from local_settings import *  # noqa: F401, F403
+    from local_settings import *
 except ImportError:
     pass
