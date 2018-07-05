@@ -4,6 +4,7 @@ from os import environ as env
 import sys
 from ast import literal_eval
 
+from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse_lazy
 from tzlocal import get_localzone
 
