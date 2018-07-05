@@ -1,47 +1,33 @@
 # Django settings for OIPA project.
+
 import os
 from os import environ as env
 import sys
 from ast import literal_eval
 
-from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse_lazy
 from tzlocal import get_localzone
 
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-PROJECT_PATH = os.path.join(BASE_DIR, 'OIPA')
-PROJECT_NAME = _('OIPA')
-
-DEBUG = False
-
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+DEBUG = literal_eval(env.get('OIPA_DEBUG', 'True'))
 FTS_ENABLED = literal_eval(env.get('OIPA_FTS_ENABLED', 'True'))
 
 LOGIN_URL = reverse_lazy('two_factor:login')
 LOGIN_REDIRECT_URL = '/admin/'
 LOGOUT_URL = '/logout'
-
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 3000
-
-API_CACHE_SECONDS = 60 * 60 * 24
-
-ROOT_ORGANISATIONS = []
-
-# Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'OIPA.wsgi.application'
-
-ERROR_LOGS_ENABLED = False
 
 SECRET_KEY = env.get('OIPA_SECRET_KEY', 'PXwlMOpfNJTgIdQeH5zk39jKfUMZPOUK')
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'oipa',
-        'USER': 'oipa',
-        'PASSWORD': 'oipa',
-        'HOST': 'localhost',
-        'PORT': '5432',
-        'CONN_MAX_AGE': 500
+        'ENGINE': env.get('OIPA_DB_ENGINE', 'django.contrib.gis.db.backends.postgis'),
+        'HOST': env.get('OIPA_DB_HOST', 'localhost'),
+        'PORT': env.get('OIPA_DB_PORT', '5432'),
+        'NAME': env.get('OIPA_DB_NAME', 'oipa'),
+        'USER': env.get('OIPA_DB_USER', 'oipa'),
+        'PASSWORD': env.get('OIPA_DB_PASSWORD', 'oipa'),
+        'CONN_MAX_AGE': int(env.get('OIPA_DB_CONN_MAX_AGE', 500))
     },
 }
 
@@ -91,10 +77,15 @@ ALLOWED_HOSTS = env.get('OIPA_ALLOWED_HOSTS', '*').split()
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
 # In a Windows environment this must be set to your system time zone.
-TIME_ZONE =  'Asia/Dili'
-LANGUAGE_CODE = 'en'
 
-# APPEND_SLASH = True
+
+TIME_ZONE = get_localzone().zone
+
+# Language code for this installation. All choices can be found here:
+# http://www.i18nguy.com/unicode/language-identifiers.html
+LANGUAGE_CODE = 'en-us'
+
+APPEND_SLASH = True
 
 SITE_ID = 1
 
@@ -105,19 +96,29 @@ USE_I18N = True
 # If you set this to False, Django will not format dates, numbers and
 # calendars according to the current locale.
 USE_L10N = True
+
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = False
 
 # URL for static files
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'public', 'static')
+STATIC_ROOT = os.environ.get(
+    'OIPA_STATIC_ROOT',
+    os.path.join(
+        os.path.dirname(BASE_DIR),
+        'public/static'))
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'public', 'media')
-
+MEDIA_ROOT = os.environ.get(
+    'OIPA_MEDIA_ROOT',
+    os.path.join(
+        os.path.dirname(BASE_DIR),
+        'public/media'))
 
 # Additional locations of static files
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'), )
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static/'),
+)
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'OIPA.wsgi.application'
@@ -351,6 +352,6 @@ REST_FRAMEWORK_EXTENSIONS = {
 }
 
 try:
-    from local_settings import *
+    from local_settings import *  # noqa: F401, F403
 except ImportError:
     pass
