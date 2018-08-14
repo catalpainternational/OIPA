@@ -6,7 +6,7 @@ from iati_organisation.models import OrganisationNarrative
 
 
 def create_publisher_organisation(publisher, publisher_organization_type):
-    version = Version.objects.get(code="2.02")
+	version = Version.objects.get(code="2.02")
     language = Language.objects.get(code='en')
 
     try:
