@@ -241,7 +241,7 @@ class ActivityAggregations(AggregationView):
     )
 
 
-class ActivityList(CacheResponseMixin, DynamicListView):
+class ActivityList(DynamicListView):
 
     """
     Returns a list of IATI Activities stored in OIPA.
@@ -404,7 +404,7 @@ class ActivityMarkReadyToPublish(APIView, FilterPublisherMixin):
         return Response(True)
 
 
-class ActivityDetail(CacheResponseMixin, DynamicDetailView):
+class ActivityDetail(DynamicDetailView):
     """
     Returns detailed information about Activity.
 
@@ -440,7 +440,7 @@ class ActivityDetail(CacheResponseMixin, DynamicDetailView):
 # TODO separate endpoints for expensive fields like ActivityLocations & ActivityResults 08-07-2016
 
 
-class ActivityTransactionList(CacheResponseMixin, DynamicListView):
+class ActivityTransactionList(DynamicListView):
     """
     Returns a list of IATI Activity Transactions stored in OIPA.
 
@@ -495,7 +495,7 @@ class ActivityTransactionList(CacheResponseMixin, DynamicListView):
             return Transaction.objects.none().order_by('id')
 
 
-class ActivityTransactionDetail(CacheResponseMixin, DynamicDetailView):
+class ActivityTransactionDetail(DynamicDetailView):
     serializer_class = TransactionSerializer
 
     def get_object(self):
