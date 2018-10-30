@@ -335,7 +335,7 @@ LOGGING = {
 REST_FRAMEWORK_EXTENSIONS = {
     'DEFAULT_USE_CACHE': 'api',
     # reset cache every x seconds:
-    'DEFAULT_CACHE_RESPONSE_TIMEOUT': 1 * 60 * 60 * 24 * 7,  # 1 week
+    'DEFAULT_CACHE_RESPONSE_TIMEOUT': int(env.get('OIPA_DEFAULT_CACHE_RESPONSE_TIMEOUT', 1 * 60 * 60 * 24 * 7)),  # 1 week
 }
 
 # DATA PLUGINS is a dict with data which is not related to the IATI data.
