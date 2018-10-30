@@ -47,7 +47,7 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean
 
 RUN useradd --create-home --shell /bin/sh djangorunner
-
+RUN groupadd -r uwsgi && usermod --append --groups uwsgi djangorunner
 # =================
 # Pip cache
 RUN mkdir -p ~djangorunner/.pip
