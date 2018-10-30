@@ -1,0 +1,28 @@
+version: '2'
+services:
+  db:
+    env_file:
+        - .env
+    image: kartoza/postgis:10.0-2.4
+    volumes:
+    - ./oipa:/source
+    - ./data/postgres_data:/var/lib/postgresql
+
+  pgadmin:
+    env_file:
+        - .env
+    image: dpage/pgadmin4
+    ports:
+    - "5555:80"
+
+  oipa:
+    env_file:
+      - .env
+    image: oipa
+    ports:
+    - "5556:8000"
+
+  redis:
+    image: redis:5-alpine
+    volumes:
+      - ./.data/redis:/data
