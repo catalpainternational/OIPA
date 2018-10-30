@@ -73,7 +73,7 @@ ENV PYTHONPATH /app/src
 WORKDIR /app/src/OIPA
 ADD . /app/src
 
-RUN groupadd -r uwsgi && usermod --append --groups uwsgi djangorunner
+USER root
 RUN mkdir -p /app/src/public && chown -R djangorunner:uwsgi /app/src/public
 RUN mkdir -p /var/log/oipa/oipa/ && chown -R djangorunner:uwsgi /var/log/oipa/oipa/
 
