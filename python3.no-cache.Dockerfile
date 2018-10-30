@@ -43,7 +43,7 @@ USER djangorunner
 ENV PATH=/home/djangorunner/.local/bin:${PATH}
 
 COPY OIPA/requirements.txt requirements.txt
-RUN pip install --no-cache-dir --upgrade --user --trusted-host ${HOST} -r requirements.txt
+RUN pip install --no-cache-dir --upgrade --user -r requirements.txt
 
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONPATH /app/src
