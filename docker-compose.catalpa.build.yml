@@ -18,9 +18,15 @@ services:
   oipa:
     env_file:
       - .env
-    image: oipa
+    image: catalpaio/oipa
     ports:
     - "5556:8000"
+
+  oipa_supervisor:
+    env_file:
+      - .env
+    image: catalpaio/oipa
+    command: ['./manage.py', 'supervisor']
 
   redis:
     image: redis:5-alpine
