@@ -2235,25 +2235,28 @@ class Parse(IatiParser):
                 "transaction/value",
                 "text",
                 "Unspecified or invalid.")
+        try:
+            value_date = element.attrib.get('value-date')
 
-        value_date = element.attrib.get('value-date')
+            if not value_date:
+                raise RequiredFieldError(
+                    "transaction/value",
+                    "value-date",
+                    "required attribute missing")
 
-        if not value_date:
-            raise RequiredFieldError(
-                "transaction/value",
-                "value-date",
-                "required attribute missing")
+            value_date = self.validate_date(value_date)
 
-        value_date = self.validate_date(value_date)
-
-        if not value_date:
-            raise FieldValidationError(
-                "transaction/value",
-                "value-date",
-                "iso-date not of type xsd:date",
-                None,
-                None,
-                element.attrib.get('value-date'))
+            if not value_date:
+                raise FieldValidationError(
+                    "transaction/value",
+                    "value-date",
+                    "iso-date not of type xsd:date",
+                    None,
+                    None,
+                    element.attrib.get('value-date'))
+            except:
+                value_date = element.attrib.get('transaction-date')
+                value_date = self.validate_date(value_date)
 
         currency = self._get_currency_or_raise('transaction/value', currency)
 
