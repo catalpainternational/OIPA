@@ -539,8 +539,10 @@ class Parser(object):
                     else:
                         continue
 
-                    value_date = self.validate_date(self.return_first_exist(t.xpath('value/@value-date')))
-
+                    try:
+                        value_date = self.validate_date(self.return_first_exist(t.xpath('value/@value-date')))
+                    except Exception:
+                        value_date = period_start
 
 
                     currency_ref = self.return_first_exist(t.xpath('value/@currency'))
@@ -727,7 +729,10 @@ class Parser(object):
                     if not value:
                         continue
 
-                    value_date = self.validate_date(self.return_first_exist(t.xpath('value/@value-date')))
+                    try:
+                        value_date = self.validate_date(self.return_first_exist(t.xpath('value/@value-date')))
+                    except:
+                        value_date = transaction_date
 
                     currency_ref = self.return_first_exist(t.xpath('value/@currency'))
                     currency = None
