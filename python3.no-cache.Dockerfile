@@ -54,6 +54,7 @@ ADD . /app/src
 USER root
 RUN mkdir -p /app/src/public && chown -R djangorunner:uwsgi /app/src/public
 RUN mkdir -p /var/log/oipa/oipa/ && chown -R djangorunner:uwsgi /var/log/oipa/oipa/
+RUN rm -rf /app/src/OIPA/static/datasets && mkdir -p /app/src/OIPA/static/datasets && chown -R djangorunner:uwsgi /app/src/OIPA/static/datasets
 
 EXPOSE 8000
 USER djangorunner
