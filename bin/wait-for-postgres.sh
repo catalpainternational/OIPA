@@ -11,5 +11,11 @@
   sleep 1	
 done	
 
+#We need this when Docker containers are *resumed*, because stuff happens too
+#quickly (when database container is already built) and the above psql check
+#can not even detect it:
+>&2 echo "Caution sleeping for 5 secs . . ."
+sleep 5
+
  >&2 echo "Postgres is up - executing command"	
 exec $cmd
