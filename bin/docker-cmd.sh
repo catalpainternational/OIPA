@@ -5,11 +5,8 @@ set -e
 /app/src/OIPA/manage.py migrate --noinput
 
 # generate static files
-# This seems to crash and is not run on IATI
-# /app/src/OIPA/manage.py collectstatic --noinput
+/app/src/OIPA/manage.py collectstatic --noinput
 
-# make super
-/app/src/bin/make_super.sh
 
 # run Django as a wsgi process
 /app/src/bin/wait-for-postgres.sh -- uwsgi \
