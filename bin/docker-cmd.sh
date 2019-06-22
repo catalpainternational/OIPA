@@ -5,7 +5,8 @@ set -e
 /app/src/OIPA/manage.py migrate --noinput
 
 # generate static files
-/app/src/OIPA/manage.py collectstatic --noinput
+# IATI broke this I think
+#/app/src/OIPA/manage.py collectstatic --noinput
 
 
 # run Django as a wsgi process
